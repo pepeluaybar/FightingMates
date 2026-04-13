@@ -89,10 +89,10 @@ Cada integrante evalúa al resto de forma constructiva:
 
 ---
 
-## Participantes del grupo
-- [Andrés Jiménez] — [Rol - ]
-- [Daniel Villegas] — [Rol - ]
-- [José Luis Aybar] — [Rol - ]
+## Roles participantes del grupo primera fase
+- [Andrés Jiménez] — [Rol - Responsable de documentación]
+- [Daniel Villegas] — [Rol - Responsable de comunicación y organización]
+- [José Luis Aybar] — [Rol - Programador principal]
 
 ## Estado de la primera entrega
 - [ ] Descripción del juego completada
