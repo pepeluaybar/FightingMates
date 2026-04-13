@@ -50,7 +50,7 @@
 - **Estado del diagrama:** [Borrador]
 
 ### 5) Tablero Kanban
-- **Enlace al tablero Kanban:** [https://github.com/users/pepeluaybar/projects/2/views/1]
+- **Enlace al tablero Kanban:** [https://trello.com/b/3dRfKqF8/fightingmates-kanban]
 - **Columnas sugeridas:**
   - Pendiente
   - En progreso
