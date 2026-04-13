@@ -5,18 +5,18 @@
 > Este documento es una guía para completar en grupo. Sustituyan los campos entre corchetes `[]` con la información real del proyecto.
 
 ### 1) Descripción del juego
-- **Nombre del juego:** [Completar]
-- **Género:** [Completar]
-- **Objetivo principal:** [Completar]
+- **Nombre del juego:** [FightingMates]
+- **Género:** [Estrategia por turnos]
+- **Objetivo principal:** [Derrotar al rival]
 - **Mecánicas principales:**
-  - [Mecánica 1]
-  - [Mecánica 2]
-  - [Mecánica 3]
-- **Público objetivo:** [Completar]
-- **Plataforma objetivo:** [Completar]
+  - [Atacar]
+  - [Usar habilidades]
+  - [Cambio de cartas]
+- **Público objetivo:** [Todos los publicos]
+- **Plataforma objetivo:** [Terminal]
 
 ### 2) Repositorio y ramas de trabajo
-- **Enlace al repositorio:** [Pegar URL]
+- **Enlace al repositorio:** [https://github.com/pepeluaybar/FightingMates/edit/main/README.md]
 - **Rama `main`:** Rama estable y de entrega final.
 - **Rama `dev`:** Rama de integración para revisión docente.
 - **Ramas de tareas:**
@@ -46,11 +46,11 @@
   - [Método personalizado 2]
 
 ### 4) Diagrama de clases
-- **Enlace al diagrama:** [Pegar URL (Drive, Draw.io, Lucidchart, etc.)]
-- **Estado del diagrama:** [Borrador / En revisión / Aprobado por el equipo]
+- **Enlace al diagrama:** [https://lucid.app/lucidchart/aac8f32e-e9b7-4d6c-8ee8-9d254ab1e47a/edit?from_internal=true]
+- **Estado del diagrama:** [Borrador]
 
 ### 5) Tablero Kanban
-- **Enlace al tablero Kanban:** [Pegar URL (Trello, GitHub Projects, Jira, etc.)]
+- **Enlace al tablero Kanban:** [https://github.com/users/pepeluaybar/projects/2/views/1]
 - **Columnas sugeridas:**
   - Pendiente
   - En progreso
@@ -75,9 +75,9 @@ Cada integrante evalúa al resto de forma constructiva:
 - **Sugerencias concretas:** [Completar]
 
 ### 8) Protección de datos y uso de recursos (imágenes, audio y otros)
-- [ ] Se usan recursos con licencia permitida (propios, libres o con permiso).
+- [ ] Se usan recursos con licencia permitida (propios, libres o con permiso). [En progreso]
 - [ ] Se citan fuentes de imágenes/audio/otros assets.
-- [ ] No se incluyen datos personales sensibles de participantes o terceros.
+- [ ] No se incluyen datos personales sensibles de participantes o terceros sin permiso.
 - [ ] Se respeta la normativa de protección de datos aplicable.
 - [ ] El contenido multimedia implementado cumple con derechos de autor y privacidad.
 
@@ -90,10 +90,9 @@ Cada integrante evalúa al resto de forma constructiva:
 ---
 
 ## Participantes del grupo
-- [Nombre y apellido] — [Rol]
-- [Nombre y apellido] — [Rol]
-- [Nombre y apellido] — [Rol]
-- [Nombre y apellido] — [Rol]
+- [Andrés Jiménez] — [Rol - ]
+- [Daniel Villegas] — [Rol - ]
+- [José Luis Aybar] — [Rol - ]
 
 ## Estado de la primera entrega
 - [ ] Descripción del juego completada
