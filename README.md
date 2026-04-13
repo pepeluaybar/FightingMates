@@ -16,7 +16,7 @@
 - **Plataforma objetivo:** [Terminal]
 
 ### 2) Repositorio y ramas de trabajo
-- **Enlace al repositorio:** [https://github.com/pepeluaybar/FightingMates/edit/main/README.md]
+- **Enlace al repositorio:** [https://github.com/pepeluaybar/FightingMates]
 - **Rama `main`:** Rama estable y de entrega final.
 - **Rama `dev`:** Rama de integración para revisión docente.
 - **Ramas de tareas:**
