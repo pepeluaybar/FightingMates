@@ -1,5 +1,12 @@
 package fightingmates;
 
+/**
+ * Controlador principal de la partida.
+ * Gestiona el estado global: jugadores, tablero, turno actual.
+ *
+ * La lógica interactiva (elección de objetivos, menús) vive en Main.
+ * Juego expone operaciones atómicas que Main orquesta.
+ */
 public class Juego {
     public static final int MANO_INICIAL = 4;
 
@@ -9,149 +16,126 @@ public class Juego {
     private Tablero tablero;
     private int turnosJugados;
 
+    // Constructor por defecto (jugadores sin nombre real, para pruebas)
     public Juego() {
         this(new Jugador("J1", Jugador.VIDA_INICIAL, new Mazo()),
-                new Jugador("J2", Jugador.VIDA_INICIAL, new Mazo()));
+             new Jugador("J2", Jugador.VIDA_INICIAL, new Mazo()));
     }
 
+    // Constructor por parámetros
     public Juego(Jugador jugador1, Jugador jugador2) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
         this.tablero = new Tablero(jugador1, jugador2, Tablero.TAMANIO_CAMPO);
         this.jugadorActual = jugador1;
         this.turnosJugados = 0;
-        configurarJugadores();
+        vincularJugadores();
     }
 
+    // Constructor de copia (copia profunda de jugadores)
     public Juego(Juego otro) {
-        this(otro.jugador1, otro.jugador2);
-        this.jugadorActual = otro.jugadorActual;
+        this(new Jugador(otro.jugador1), new Jugador(otro.jugador2));
         this.turnosJugados = otro.turnosJugados;
+        // jugadorActual apunta al jugador1 o jugador2 de ESTA copia
+        this.jugadorActual = otro.jugadorActual == otro.jugador1 ? this.jugador1 : this.jugador2;
     }
 
-    private void configurarJugadores() {
+    /** Conecta a cada jugador su tablero y su rival. */
+    private void vincularJugadores() {
         jugador1.setTablero(tablero);
         jugador2.setTablero(tablero);
         jugador1.setRival(jugador2);
         jugador2.setRival(jugador1);
     }
 
+    // ─── Flujo de partida ─────────────────────────────────────────────────────
+
+    /** Baraja los mazos y reparte la mano inicial a ambos jugadores. */
     public void iniciarPartida() {
         jugador1.getMazo().barajar();
         jugador2.getMazo().barajar();
-
         for (int i = 0; i < MANO_INICIAL; i++) {
             jugador1.robarCarta();
             jugador2.robarCarta();
         }
     }
 
-    public void realizarTurno() {
-        jugadorActual.robarCarta();
-        // v1: la lógica completa de acciones por turno se implementará por fases.
-        resolverAtaques();
+    /**
+     * Ejecuta un ataque de atacante sobre objetivo.
+     * Las habilidades de curación (soloAliados=true) NO se activan aquí:
+     * son acciones manuales elegidas por el jugador en su fase de ataque.
+     */
+    public void ejecutarAtaque(Unidad atacante, Unidad objetivo) {
+        if (atacante == null || !atacante.estaViva()) return;
+        if (objetivo == null || !objetivo.estaViva()) return;
+        atacante.atacar(objetivo);
+        // Solo aplica habilidad automáticamente si NO es de curación exclusiva para aliados
+        Habilidad hab = atacante.getHabilidad();
+        if (hab != null && !hab.esSoloAliados()) {
+            atacante.aplicarHabilidad(objetivo, jugadorActual, getJugadorRival(jugadorActual));
+        }
+    }
+
+    /** Una unidad ataca directamente al jugador rival (cuando no hay unidades enemigas). */
+    public void atacarJugador(Unidad atacante, Jugador defensor) {
+        if (atacante == null || !atacante.estaViva() || defensor == null) return;
+        defensor.recibirDanio(atacante.getAtaqueEfectivo());
+    }
+
+    /** Devuelve el ganador si hay uno, null si la partida continúa. */
+    public Jugador comprobarGanador() {
+        if (jugador1.estaDerrotado()) return jugador2;
+        if (jugador2.estaDerrotado()) return jugador1;
+        return null;
+    }
+
+    /** Marca fin de turno: primerTurno=false, incrementa contador, cambia turno. */
+    public void finalizarTurno() {
         jugadorActual.setPrimerTurno(false);
         turnosJugados++;
         cambiarTurno();
     }
 
-    public void resolverAtaques() {
-        Jugador atacante = jugadorActual;
-        Jugador defensor = atacante.equals(jugador1) ? jugador2 : jugador1;
-        Unidad[] unidadesAtacantes = tablero.obtenerUnidadesVivas(atacante);
-        Unidad[] unidadesDefensoras = tablero.obtenerUnidadesVivas(defensor);
-
-        for (Unidad unidadAtacante : unidadesAtacantes) {
-            if (unidadAtacante == null || !unidadAtacante.estaViva()) {
-                continue;
-            }
-
-            if (unidadesDefensoras.length > 0) {
-                ejecutarAtaque(unidadAtacante, unidadesDefensoras[0]);
-                if (!unidadesDefensoras[0].estaViva()) {
-                    unidadesDefensoras = tablero.obtenerUnidadesVivas(defensor);
-                }
-            } else {
-                defensor.recibirDanio(unidadAtacante.getAtaque());
-            }
-        }
-    }
-
-    public void ejecutarAtaque(Unidad atacante, Unidad objetivo) {
-        if (atacante == null || !atacante.estaViva()) {
-            return;
-        }
-
-        if (objetivo != null && objetivo.estaViva()) {
-            atacante.atacar(objetivo);
-            atacante.aplicarHabilidad(objetivo, jugadorActual, obtenerRival(jugadorActual));
-        }
-    }
-
-    public Jugador comprobarGanador() {
-        if (jugador1.estaDerrotado()) {
-            return jugador2;
-        }
-        if (jugador2.estaDerrotado()) {
-            return jugador1;
-        }
-        return null;
-    }
-
     public void cambiarTurno() {
-        jugadorActual = jugadorActual.equals(jugador1) ? jugador2 : jugador1;
+        jugadorActual = (jugadorActual == jugador1) ? jugador2 : jugador1;
     }
 
-    private Jugador obtenerRival(Jugador jugador) {
-        return jugador.equals(jugador1) ? jugador2 : jugador1;
+    // ─── Utilidades ───────────────────────────────────────────────────────────
+
+    public Jugador getJugadorRival(Jugador jugador) {
+        return (jugador == jugador1) ? jugador2 : jugador1;
     }
 
-    public Jugador getJugador1() {
-        return jugador1;
-    }
+    // ─── Getters y setters ────────────────────────────────────────────────────
 
+    public Jugador getJugador1() { return jugador1; }
     public void setJugador1(Jugador jugador1) {
         this.jugador1 = jugador1;
-        configurarJugadores();
+        vincularJugadores();
     }
 
-    public Jugador getJugador2() {
-        return jugador2;
-    }
-
+    public Jugador getJugador2() { return jugador2; }
     public void setJugador2(Jugador jugador2) {
         this.jugador2 = jugador2;
-        configurarJugadores();
+        vincularJugadores();
     }
 
-    public Jugador getJugadorActual() {
-        return jugadorActual;
-    }
+    public Jugador getJugadorActual() { return jugadorActual; }
+    public void setJugadorActual(Jugador jugadorActual) { this.jugadorActual = jugadorActual; }
 
-    public void setJugadorActual(Jugador jugadorActual) {
-        this.jugadorActual = jugadorActual;
-    }
-
-    public Tablero getTablero() {
-        return tablero;
-    }
-
+    public Tablero getTablero() { return tablero; }
     public void setTablero(Tablero tablero) {
         this.tablero = tablero;
-        configurarJugadores();
+        vincularJugadores();
     }
 
-    public int getTurnosJugados() {
-        return turnosJugados;
-    }
+    public int getTurnosJugados() { return turnosJugados; }
 
     @Override
     public String toString() {
-        return "Juego{" +
-                "jugador1=" + jugador1.getNombre() +
-                ", jugador2=" + jugador2.getNombre() +
-                ", jugadorActual=" + jugadorActual.getNombre() +
-                ", turnosJugados=" + turnosJugados +
-                '}';
+        return "Juego{turno=" + turnosJugados
+                + ", actual=" + jugadorActual.getNombre()
+                + ", J1=" + jugador1.getVida() + "hp"
+                + ", J2=" + jugador2.getVida() + "hp}";
     }
 }
