@@ -102,4 +102,4 @@ Cada integrante evalúa al resto de forma constructiva:
 - [ ] Tablero Kanban enlazado
 - [ ] Autoevaluación completada
 - [ ] Coevaluación completada
-- [ ] Apartado de protección de datos completado
+- [ ] Apartado de protección de datos completado.
