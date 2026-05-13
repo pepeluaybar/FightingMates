@@ -1,0 +1,98 @@
+[
+  {
+    "id": "object_redu",
+    "slug": "redu",
+    "name": "Redu",
+    "classId": "class_invocacion",
+    "sourceCardId": "card_pepelu_delegado",
+    "description": "Entidad invocada por Pepelu Delegado que aplica depresión al equipo rival.",
+    "stats": {},
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "value": "depresion"
+      }
+    ],
+    "tags": [
+      "personaje:redu",
+      "invocacion",
+      "estado:depresion"
+    ],
+    "status": "draft"
+  },
+  {
+    "id": "object_cigarro",
+    "slug": "cigarro",
+    "name": "Cigarro",
+    "classId": "class_consumible",
+    "sourceCardId": "card_pepelu_perro",
+    "description": "Objeto narrativo que acompaña el regreso de Pepelu a la mano y su curación completa.",
+    "stats": {},
+    "effects": [
+      {
+        "type": "return_to_hand",
+        "target": "self",
+        "value": true
+      },
+      {
+        "type": "heal_percent_max_hp",
+        "target": "self",
+        "value": 100
+      }
+    ],
+    "tags": [
+      "objeto",
+      "recuperacion"
+    ],
+    "status": "draft"
+  },
+  {
+    "id": "object_cafe_chill",
+    "slug": "cafe_chill",
+    "name": "Café chill",
+    "classId": "class_consumible",
+    "sourceCardId": "card_merino_chill",
+    "description": "Objeto narrativo usado para limpiar estados del equipo aliado.",
+    "stats": {},
+    "effects": [
+      {
+        "type": "clear_status",
+        "target": "all_allies",
+        "value": "all"
+      }
+    ],
+    "tags": [
+      "objeto",
+      "limpieza_estados"
+    ],
+    "status": "draft"
+  },
+  {
+    "id": "object_cana_chocolate",
+    "slug": "cana_chocolate",
+    "name": "Caña de chocolate de antes de ayer",
+    "classId": "class_consumible",
+    "sourceCardId": "card_pablo_canita",
+    "description": "Objeto ofensivo que inflige daño proporcional y cura a Pablo.",
+    "stats": {},
+    "effects": [
+      {
+        "type": "damage_percent_max_hp",
+        "target": "enemy",
+        "value": 50
+      },
+      {
+        "type": "heal_percent_max_hp",
+        "target": "self",
+        "value": 25
+      }
+    ],
+    "tags": [
+      "objeto",
+      "ofensiva",
+      "recuperacion"
+    ],
+    "status": "draft"
+  }
+]

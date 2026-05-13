@@ -1,0 +1,889 @@
+[
+  {
+    "id": "card_dani_dieta",
+    "slug": "dani_dieta",
+    "name": "Dani Dieta",
+    "rarity": "perro",
+    "type": "defensa",
+    "target": "self",
+    "timing": "action",
+    "stats": {},
+    "effects": [
+      {
+        "type": "reduce_damage",
+        "target": "self",
+        "value": 25
+      }
+    ],
+    "tags": [
+      "personaje:dani",
+      "rareza:perro",
+      "rol:soporte",
+      "tipo:defensa"
+    ],
+    "description": "Dani se pone a dieta y reduce el daño recibido durante este turno.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_dani_dopaminico",
+    "slug": "dani_dopaminico",
+    "name": "Dani Dopaminico",
+    "rarity": "oca",
+    "type": "ataque",
+    "target": "self",
+    "timing": "passive",
+    "stats": {},
+    "effects": [
+      {
+        "type": "buff_damage",
+        "target": "self",
+        "value": 40
+      }
+    ],
+    "tags": [
+      "personaje:dani",
+      "rareza:oca",
+      "rol:soporte",
+      "tipo:ataque"
+    ],
+    "description": "Dani entra dopamínico y aumenta mucho su daño mientras siga en el tablero.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_pepelu_perro",
+    "slug": "pepelu_perro",
+    "name": "Pepelu Perro",
+    "rarity": "perro",
+    "type": "tecnica",
+    "target": "self",
+    "timing": "reaction",
+    "stats": {},
+    "effects": [
+      {
+        "type": "return_to_hand",
+        "target": "self",
+        "value": true
+      },
+      {
+        "type": "heal_percent_max_hp",
+        "target": "self",
+        "value": 100
+      }
+    ],
+    "tags": [
+      "personaje:pepelu",
+      "rareza:perro",
+      "rol:recuperacion",
+      "tipo:tecnica"
+    ],
+    "description": "Pepelu se fuma un cigarro y vuelve a la mano con toda la vida.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_pepelu_delegado",
+    "slug": "pepelu_delegado",
+    "name": "Pepelu Delegado",
+    "rarity": "oca",
+    "type": "estado",
+    "target": "all_enemies",
+    "timing": "passive",
+    "stats": {},
+    "effects": [
+      {
+        "type": "summon",
+        "target": "self",
+        "value": "Redu"
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "value": "depresion"
+      }
+    ],
+    "tags": [
+      "personaje:pepelu",
+      "rareza:oca",
+      "rol:control",
+      "rol:invocacion",
+      "tipo:estado"
+    ],
+    "description": "Pepelu usa su poder de delegado e invoca a Redu, que deprime al equipo rival.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_nach_scratch",
+    "slug": "nach_scratch",
+    "name": "Nach Scratch",
+    "rarity": "perro",
+    "type": "estado",
+    "target": "enemy",
+    "timing": "action",
+    "stats": {},
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "value": "confusion"
+      }
+    ],
+    "tags": [
+      "personaje:nacho",
+      "rareza:perro",
+      "rol:control",
+      "tipo:estado"
+    ],
+    "description": "Nacho usa Cuack y confunde al objetivo.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_nacho_presidente",
+    "slug": "nacho_presidente",
+    "name": "Nacho Presidente",
+    "rarity": "oca",
+    "type": "defensa",
+    "target": "all_allies",
+    "timing": "passive",
+    "stats": {},
+    "effects": [
+      {
+        "type": "heal_percent_max_hp",
+        "target": "all_allies",
+        "value": 20
+      },
+      {
+        "type": "buff_damage",
+        "target": "all_allies",
+        "value": 15
+      }
+    ],
+    "tags": [
+      "personaje:nacho",
+      "rareza:oca",
+      "rol:recuperacion",
+      "rol:soporte",
+      "tipo:defensa"
+    ],
+    "description": "Nacho Presidente cura y bufa a sus compañeros mientras esté en el tablero.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_andres_peruano",
+    "slug": "andres_peruano",
+    "name": "Andres Peruano",
+    "rarity": "perro",
+    "type": "defensa",
+    "target": "self",
+    "timing": "action",
+    "stats": {},
+    "effects": [
+      {
+        "type": "heal_percent_max_hp",
+        "target": "self",
+        "value": 50
+      },
+      {
+        "type": "skip_next_turn",
+        "target": "self",
+        "value": 1
+      }
+    ],
+    "tags": [
+      "personaje:andres",
+      "rareza:perro",
+      "rol:control",
+      "rol:recuperacion",
+      "tipo:defensa"
+    ],
+    "description": "Andrés se recompone con una siestecita, recupera media vida, pero pierde el siguiente turno.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_andres_snorlax",
+    "slug": "andres_snorlax",
+    "name": "Andres Snorlax",
+    "rarity": "oca",
+    "type": "defensa",
+    "target": "self",
+    "timing": "passive",
+    "stats": {},
+    "effects": [
+      {
+        "type": "heal_percent_max_hp",
+        "target": "self",
+        "value": 50
+      },
+      {
+        "type": "skip_next_turn",
+        "target": "self",
+        "value": 1
+      }
+    ],
+    "tags": [
+      "personaje:andres",
+      "rareza:oca",
+      "rol:control",
+      "rol:recuperacion",
+      "tipo:defensa"
+    ],
+    "description": "Andrés Snorlax duerme profundamente, se cura mucho, pero queda un turno sin actuar.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_manu_patodilla",
+    "slug": "manu_patodilla",
+    "name": "Manu Patodilla",
+    "rarity": "perro",
+    "type": "ataque",
+    "target": "all_enemies",
+    "timing": "action",
+    "stats": {},
+    "effects": [
+      {
+        "type": "damage",
+        "target": "all_enemies",
+        "value": 20
+      }
+    ],
+    "tags": [
+      "personaje:manu",
+      "rareza:perro",
+      "rol:ofensiva",
+      "tipo:ataque"
+    ],
+    "description": "Manu usa Silbido y hace daño a todos los enemigos.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_manu_y_con_y_de_to",
+    "slug": "manu_y_con_y_de_to",
+    "name": "Manu y con y de to",
+    "rarity": "oca",
+    "type": "tecnica",
+    "target": "self",
+    "timing": "passive",
+    "stats": {},
+    "effects": [
+      {
+        "type": "buff_damage",
+        "target": "self",
+        "value": 35
+      },
+      {
+        "type": "buff_defense",
+        "target": "self",
+        "value": 25
+      }
+    ],
+    "tags": [
+      "personaje:manu",
+      "rareza:oca",
+      "rol:soporte",
+      "tipo:tecnica"
+    ],
+    "description": "Manu usa Y de to y se bufa basto mientras siga en el tablero.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_christian_ausente",
+    "slug": "christian_ausente",
+    "name": "Christian Ausente",
+    "rarity": "perro",
+    "type": "defensa",
+    "target": "all_allies",
+    "timing": "reaction",
+    "stats": {},
+    "effects": [
+      {
+        "type": "clear_status",
+        "target": "all_allies",
+        "value": "all"
+      }
+    ],
+    "tags": [
+      "personaje:christian",
+      "rareza:perro",
+      "rol:recuperacion",
+      "tipo:defensa"
+    ],
+    "description": "Christian aparece con un café y anula cualquier problema de estado del equipo aliado.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_christian_hiperactivo",
+    "slug": "christian_hiperactivo",
+    "name": "Christian hiperactivo",
+    "rarity": "oca",
+    "type": "mate",
+    "target": "board",
+    "timing": "passive",
+    "stats": {},
+    "effects": [
+      {
+        "type": "destroy_all_cards",
+        "target": "board",
+        "value": "include_self"
+      }
+    ],
+    "tags": [
+      "personaje:christian",
+      "rareza:oca",
+      "rol:ofensiva",
+      "tipo:mate"
+    ],
+    "description": "Christian activa Demonio y elimina a todas las cartas de la mesa, incluido él mismo.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_pablo_ludopata",
+    "slug": "pablo_ludopata",
+    "name": "Pablo Ludopata",
+    "rarity": "perro",
+    "type": "ataque",
+    "target": "all_enemies",
+    "timing": "action",
+    "stats": {},
+    "effects": [
+      {
+        "type": "damage",
+        "target": "all_enemies",
+        "value": 20
+      }
+    ],
+    "tags": [
+      "personaje:pablo",
+      "rareza:perro",
+      "rol:ofensiva",
+      "tipo:ataque"
+    ],
+    "description": "Pablo usa Silbido y hace daño a todos los enemigos.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_pablo_canita",
+    "slug": "pablo_canita",
+    "name": "Pablo Cañita",
+    "rarity": "oca",
+    "type": "ataque",
+    "target": "enemy",
+    "timing": "passive",
+    "stats": {},
+    "effects": [
+      {
+        "type": "damage_percent_max_hp",
+        "target": "enemy",
+        "value": 50
+      },
+      {
+        "type": "heal_percent_max_hp",
+        "target": "self",
+        "value": 25
+      }
+    ],
+    "tags": [
+      "personaje:pablo",
+      "rareza:oca",
+      "rol:ofensiva",
+      "rol:recuperacion",
+      "tipo:ataque"
+    ],
+    "description": "Pablo utiliza la caña de chocolate de antes de ayer y hace un 50% de la vida total del enemigo como daño.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_melero_perro",
+    "slug": "melero_perro",
+    "name": "Melero Perro",
+    "rarity": "perro",
+    "type": "ataque",
+    "target": "enemy",
+    "timing": "action",
+    "stats": {},
+    "effects": [
+      {
+        "type": "damage",
+        "target": "enemy",
+        "value": 25
+      }
+    ],
+    "tags": [
+      "personaje:melero",
+      "rareza:perro",
+      "rol:ofensiva",
+      "tipo:ataque"
+    ],
+    "description": "Melero Perro ataca directamente a un enemigo.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_melero_friki",
+    "slug": "melero_friki",
+    "name": "Melero Friki",
+    "rarity": "oca",
+    "type": "tecnica",
+    "target": "self",
+    "timing": "passive",
+    "stats": {},
+    "effects": [
+      {
+        "type": "buff_technique",
+        "target": "self",
+        "value": 30
+      }
+    ],
+    "tags": [
+      "personaje:melero",
+      "rareza:oca",
+      "rol:soporte",
+      "tipo:tecnica"
+    ],
+    "description": "Melero Friki analiza la partida y potencia sus habilidades técnicas.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_javi_chiquitin",
+    "slug": "javi_chiquitin",
+    "name": "Javi Chiquitin",
+    "rarity": "perro",
+    "type": "ataque",
+    "target": "all_enemies",
+    "timing": "action",
+    "stats": {},
+    "effects": [
+      {
+        "type": "damage",
+        "target": "all_enemies",
+        "value": 20
+      }
+    ],
+    "tags": [
+      "personaje:javi",
+      "rareza:perro",
+      "rol:ofensiva",
+      "tipo:ataque"
+    ],
+    "description": "Javi Chiquitín usa Silbido y hace daño a todos los enemigos.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_javi_bet",
+    "slug": "javi_bet",
+    "name": "Javi BET",
+    "rarity": "oca",
+    "type": "tecnica",
+    "target": "random_enemy",
+    "timing": "passive",
+    "stats": {},
+    "effects": [
+      {
+        "type": "random_effect",
+        "target": "random_enemy",
+        "value": "bet"
+      }
+    ],
+    "tags": [
+      "personaje:javi",
+      "rareza:oca",
+      "rol:control",
+      "tipo:tecnica"
+    ],
+    "description": "Javi BET apuesta la jugada y provoca un efecto aleatorio sobre un enemigo.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_javi_inexistente",
+    "slug": "javi_inexistente",
+    "name": "Javi Inexistente",
+    "rarity": "perro",
+    "type": "estado",
+    "target": "self",
+    "timing": "reaction",
+    "stats": {},
+    "effects": [
+      {
+        "type": "evade_next_effect",
+        "target": "self",
+        "value": 1
+      }
+    ],
+    "tags": [
+      "personaje:javi",
+      "rareza:perro",
+      "rol:soporte",
+      "tipo:estado"
+    ],
+    "description": "Javi se vuelve inexistente y evita el siguiente daño o efecto recibido.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_javi_jaenero",
+    "slug": "javi_jaenero",
+    "name": "Javi Jaenero",
+    "rarity": "oca",
+    "type": "mate",
+    "target": "board",
+    "timing": "passive",
+    "stats": {},
+    "effects": [
+      {
+        "type": "destroy_random_card",
+        "target": "board",
+        "value": 1
+      }
+    ],
+    "tags": [
+      "personaje:javi",
+      "rareza:oca",
+      "rol:ofensiva",
+      "tipo:mate"
+    ],
+    "description": "Javi activa Viaje a Jaén y elimina una carta aleatoria de todo el tablero.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_merino_chill",
+    "slug": "merino_chill",
+    "name": "Merino Chill",
+    "rarity": "perro",
+    "type": "defensa",
+    "target": "all_allies",
+    "timing": "reaction",
+    "stats": {},
+    "effects": [
+      {
+        "type": "clear_status",
+        "target": "all_allies",
+        "value": "all"
+      }
+    ],
+    "tags": [
+      "personaje:merino",
+      "rareza:perro",
+      "rol:recuperacion",
+      "tipo:defensa"
+    ],
+    "description": "Merino se toma un café chill y anula cualquier problema de estado del equipo aliado.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_merino_mipino",
+    "slug": "merino_mipino",
+    "name": "Merino MiPINO",
+    "rarity": "oca",
+    "type": "defensa",
+    "target": "self",
+    "timing": "passive",
+    "stats": {},
+    "effects": [
+      {
+        "type": "reduce_next_damage",
+        "target": "self",
+        "value": 50
+      }
+    ],
+    "tags": [
+      "personaje:merino",
+      "rareza:oca",
+      "rol:soporte",
+      "tipo:defensa"
+    ],
+    "description": "Merino activa No me la merezco y reduce el impacto del siguiente ataque recibido.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_antonio_viego",
+    "slug": "antonio_viego",
+    "name": "Antonio viego",
+    "rarity": "perro",
+    "type": "defensa",
+    "target": "ally",
+    "timing": "reaction",
+    "stats": {},
+    "effects": [
+      {
+        "type": "reduce_damage",
+        "target": "ally",
+        "value": 30
+      }
+    ],
+    "tags": [
+      "personaje:antonio",
+      "rareza:perro",
+      "rol:soporte",
+      "tipo:defensa"
+    ],
+    "description": "Antonio viejo protege a un aliado y reduce el daño que va a recibir.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  },
+  {
+    "id": "card_antonio_padre",
+    "slug": "antonio_padre",
+    "name": "Antonio PAdre",
+    "rarity": "oca",
+    "type": "defensa",
+    "target": "all_allies",
+    "timing": "passive",
+    "stats": {},
+    "effects": [
+      {
+        "type": "conditional_immunity",
+        "target": "all_allies",
+        "value": {
+          "condition": "board_contains_pablo_or_pepelu",
+          "affected_cards": [
+            "Pablo",
+            "Pepelu"
+          ],
+          "immunity": "damage_and_status"
+        }
+      }
+    ],
+    "tags": [
+      "personaje:antonio",
+      "rareza:oca",
+      "rol:soporte",
+      "tipo:defensa"
+    ],
+    "description": "Antonio Padre protege a sus hijos. Si está en el tablero con Pablo, Pepelu o ambos, esos hijos son inmunes a todo daño y efecto.",
+    "flavor": "",
+    "art": {
+      "asset": "",
+      "prompt": ""
+    },
+    "balance": {
+      "unlockLevel": 1,
+      "dropEnabled": true,
+      "dropWeightOverride": null
+    },
+    "status": "draft"
+  }
+]
