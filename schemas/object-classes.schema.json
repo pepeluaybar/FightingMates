@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fightingmates.local/schemas/object-classes.schema.json",
+  "title": "FightingMates Object Classes",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "slug", "name", "category", "description", "defaultTags", "status"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^class_[a-z0-9_]+$"
+      },
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z0-9_]+$"
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1
+      },
+      "category": {
+        "enum": ["item", "entity", "ability", "status"]
+      },
+      "description": {
+        "type": "string",
+        "minLength": 1
+      },
+      "defaultTags": {
+        "type": "array",
+        "items": { "type": "string", "minLength": 1 },
+        "uniqueItems": true
+      },
+      "status": {
+        "enum": ["draft", "provisional", "approved", "deprecated"]
+      }
+    }
+  }
+}
