@@ -132,3 +132,4 @@ El loader también reconoce los efectos del diseño de datos (`buff_damage`, `re
 - efecto desconocido.
 
 Si la carga falla, el juego usa un mazo interno de emergencia para no terminar con una excepción sin explicación.
+=======
