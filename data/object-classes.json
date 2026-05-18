@@ -1,0 +1,49 @@
+[
+  {
+    "id": "class_consumible",
+    "slug": "consumible",
+    "name": "Consumible",
+    "category": "item",
+    "description": "Objeto de un solo uso asociado a una acción o reacción.",
+    "defaultTags": [
+      "objeto",
+      "uso_unico"
+    ],
+    "status": "draft"
+  },
+  {
+    "id": "class_invocacion",
+    "slug": "invocacion",
+    "name": "Invocación",
+    "category": "entity",
+    "description": "Entidad temporal creada por una carta, como Redu.",
+    "defaultTags": [
+      "entidad",
+      "invocada"
+    ],
+    "status": "draft"
+  },
+  {
+    "id": "class_habilidad_pasiva",
+    "slug": "habilidad_pasiva",
+    "name": "Habilidad pasiva",
+    "category": "ability",
+    "description": "Habilidad que permanece activa mientras su fuente esté en el tablero.",
+    "defaultTags": [
+      "habilidad",
+      "pasiva"
+    ],
+    "status": "draft"
+  },
+  {
+    "id": "class_estado",
+    "slug": "estado",
+    "name": "Estado",
+    "category": "status",
+    "description": "Modificador aplicado a cartas o equipos.",
+    "defaultTags": [
+      "estado"
+    ],
+    "status": "draft"
+  }
+]

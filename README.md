@@ -23,3 +23,21 @@ Esqueleto inicial de la v1 del proyecto en Java.
 javac -d out $(find src/main/java -name "*.java")
 java -cp out fightingmates.Main
 ```
+
+## Carga de cartas desde JSON
+
+Por defecto el juego carga el mazo desde `resources/cards/cards.json` al arrancar.
+
+```bash
+javac -d out $(find src/main/java -name "*.java")
+java -cp out fightingmates.Main --list-cards
+java -cp out fightingmates.Main
+```
+
+También puedes indicar otro archivo de cartas:
+
+```bash
+java -cp out fightingmates.Main --cards resources/cards/cards.json
+```
+
+El formato completo está documentado en `docs/data-design.md`.

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "perro",
+    "name": "Perro",
+    "tier": "common",
+    "description": "Rareza común activa para cartas base.",
+    "dropWeight": 80,
+    "status": "draft"
+  },
+  {
+    "id": "oca",
+    "name": "Oca",
+    "tier": "epic",
+    "description": "Rareza épica activa para cartas especiales.",
+    "dropWeight": 20,
+    "status": "draft"
+  }
+]

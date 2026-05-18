@@ -1,0 +1,72 @@
+[
+  {
+    "id": "ability_depresion",
+    "slug": "depresion",
+    "name": "Depresión",
+    "type": "status",
+    "description": "Estado provocado por Redu. Pendiente de definir si reduce daño, impide atacar, baja defensa o dura varios turnos.",
+    "rules": {
+      "pendingDesign": true,
+      "candidateBehaviors": [
+        "reduce_damage_output",
+        "skip_attack_chance",
+        "reduce_defense",
+        "duration_turns"
+      ]
+    },
+    "status": "provisional"
+  },
+  {
+    "id": "ability_confusion",
+    "slug": "confusion",
+    "name": "Confusión",
+    "type": "status",
+    "description": "Estado provocado por Nach Scratch. Pendiente de definir comportamiento exacto.",
+    "rules": {
+      "pendingDesign": true,
+      "candidateBehaviors": [
+        "random_target",
+        "action_fail_chance",
+        "self_hit_chance"
+      ]
+    },
+    "status": "provisional"
+  },
+  {
+    "id": "ability_bet",
+    "slug": "bet",
+    "name": "BET",
+    "type": "random_effect",
+    "description": "Efecto aleatorio de Javi BET. Resultados y probabilidades pendientes de diseño.",
+    "rules": {
+      "pendingDesign": true,
+      "outcomes": []
+    },
+    "status": "provisional"
+  },
+  {
+    "id": "ability_no_me_la_merezco",
+    "slug": "no_me_la_merezco",
+    "name": "No me la merezco",
+    "type": "defensive_reduction",
+    "description": "Habilidad defensiva asociada a Merino MiPINO. Por ahora reduce el siguiente daño recibido en un 50%; falta confirmar si también bloquea estados.",
+    "rules": {
+      "damageReductionPercent": 50,
+      "appliesToStatuses": false,
+      "needsConfirmation": true
+    },
+    "status": "provisional"
+  },
+  {
+    "id": "ability_silbido",
+    "slug": "silbido",
+    "name": "Silbido",
+    "type": "area_damage",
+    "description": "Patrón común de daño en área usado por Manu Patodilla, Pablo Ludopata y Javi Chiquitín.",
+    "rules": {
+      "damage": 20,
+      "target": "all_enemies"
+    },
+    "status": "draft"
+  }
+]

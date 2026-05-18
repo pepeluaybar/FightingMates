@@ -1,0 +1,90 @@
+{
+  "types": [
+    {
+      "id": "ataque",
+      "name": "Ataque",
+      "description": "Cartas centradas en infligir daño."
+    },
+    {
+      "id": "defensa",
+      "name": "Defensa",
+      "description": "Cartas centradas en protección, mitigación o curación."
+    },
+    {
+      "id": "tecnica",
+      "name": "Técnica",
+      "description": "Cartas de utilidad, mejora o jugadas especiales."
+    },
+    {
+      "id": "estado",
+      "name": "Estado",
+      "description": "Cartas que aplican, limpian o interactúan con estados."
+    },
+    {
+      "id": "mate",
+      "name": "Mate",
+      "description": "Cartas de impacto decisivo sobre el tablero."
+    }
+  ],
+  "targets": [
+    "self",
+    "ally",
+    "enemy",
+    "all_allies",
+    "all_enemies",
+    "random_enemy",
+    "board"
+  ],
+  "timings": [
+    "instant",
+    "action",
+    "reaction",
+    "start_turn",
+    "end_turn",
+    "passive"
+  ],
+  "effectTypes": [
+    "apply_status",
+    "buff_damage",
+    "buff_defense",
+    "buff_technique",
+    "clear_status",
+    "conditional_immunity",
+    "damage",
+    "damage_percent_max_hp",
+    "destroy_all_cards",
+    "destroy_random_card",
+    "evade_next_effect",
+    "heal_percent_max_hp",
+    "random_effect",
+    "reduce_damage",
+    "reduce_next_damage",
+    "return_to_hand",
+    "skip_next_turn",
+    "summon"
+  ],
+  "statuses": [
+    {
+      "id": "depresion",
+      "name": "Depresión",
+      "description": "Estado provisional provocado por Redu. Comportamiento pendiente de diseño.",
+      "status": "provisional"
+    },
+    {
+      "id": "confusion",
+      "name": "Confusión",
+      "description": "Estado provisional provocado por Cuack. Comportamiento pendiente de diseño.",
+      "status": "provisional"
+    }
+  ],
+  "rules": {
+    "energySystem": false,
+    "validRarities": [
+      "perro",
+      "oca"
+    ],
+    "removedRarities": [
+      "pato"
+    ]
+  }
+}

@@ -28,6 +28,7 @@ public class Objeto extends Carta {
     // Constructor de copia
     public Objeto(Objeto otro) {
         this(otro.getId(), otro.getNombre(), otro.getDescripcion(), otro.tipoEfecto, otro.valor);
+        copiarMetadatosDesde(otro);
     }
 
     /**

@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fightingmates.local/schemas/cards.schema.json",
+  "title": "FightingMates Cards",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "slug",
+      "name",
+      "rarity",
+      "type",
+      "target",
+      "timing",
+      "stats",
+      "effects",
+      "tags",
+      "description",
+      "art",
+      "balance",
+      "status"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^card_[a-z0-9_]+$"
+      },
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z0-9_]+$"
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1
+      },
+      "rarity": {
+        "enum": ["perro", "oca"]
+      },
+      "type": {
+        "enum": ["ataque", "defensa", "tecnica", "estado", "mate"]
+      },
+      "target": {
+        "enum": ["self", "ally", "enemy", "all_allies", "all_enemies", "random_enemy", "board"]
+      },
+      "timing": {
+        "enum": ["instant", "action", "reaction", "start_turn", "end_turn", "passive"]
+      },
+      "stats": {
+        "type": "object"
+      },
+      "effects": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "target", "value"],
+          "properties": {
+            "type": {
+              "enum": [
+                "apply_status",
+                "buff_damage",
+                "buff_defense",
+                "buff_technique",
+                "clear_status",
+                "conditional_immunity",
+                "damage",
+                "damage_percent_max_hp",
+                "destroy_all_cards",
+                "destroy_random_card",
+                "evade_next_effect",
+                "heal_percent_max_hp",
+                "random_effect",
+                "reduce_damage",
+                "reduce_next_damage",
+                "return_to_hand",
+                "skip_next_turn",
+                "summon"
+              ]
+            },
+            "target": {
+              "enum": ["self", "ally", "enemy", "all_allies", "all_enemies", "random_enemy", "board"]
+            },
+            "value": {
+              "oneOf": [
+                { "type": "number" },
+                { "type": "string" },
+                { "type": "boolean" },
+                {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "uniqueItems": true
+      },
+      "description": {
+        "type": "string",
+        "minLength": 1
+      },
+      "flavor": {
+        "type": "string"
+      },
+      "art": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["asset", "prompt"],
+        "properties": {
+          "asset": { "type": "string" },
+          "prompt": { "type": "string" }
+        }
+      },
+      "balance": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["unlockLevel", "dropEnabled", "dropWeightOverride"],
+        "properties": {
+          "unlockLevel": { "type": "integer", "minimum": 1 },
+          "dropEnabled": { "type": "boolean" },
+          "dropWeightOverride": {
+            "type": ["number", "null"],
+            "minimum": 0
+          }
+        }
+      },
+      "status": {
+        "enum": ["draft", "provisional", "approved", "deprecated"]
+      }
+    }
+  }
+}

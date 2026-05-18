@@ -1,0 +1,36 @@
+{
+  "categories": [
+    {
+      "id": "item",
+      "name": "Objeto",
+      "description": "Elemento usable o referenciado por una carta."
+    },
+    {
+      "id": "entity",
+      "name": "Entidad",
+      "description": "Personaje o invocación presente en el tablero."
+    },
+    {
+      "id": "ability",
+      "name": "Habilidad",
+      "description": "Regla o capacidad vinculada a una carta o entidad."
+    },
+    {
+      "id": "status",
+      "name": "Estado",
+      "description": "Condición persistente o temporal aplicada a objetivos."
+    }
+  ],
+  "classIds": [
+    "class_consumible",
+    "class_invocacion",
+    "class_habilidad_pasiva",
+    "class_estado"
+  ],
+  "statusValues": [
+    "draft",
+    "provisional",
+    "approved",
+    "deprecated"
+  ]
+}

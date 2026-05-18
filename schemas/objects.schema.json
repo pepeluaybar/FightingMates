@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fightingmates.local/schemas/objects.schema.json",
+  "title": "FightingMates Objects",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "slug", "name", "classId", "sourceCardId", "description", "stats", "effects", "tags", "status"],
+    "properties": {
+      "id": { "type": "string", "pattern": "^object_[a-z0-9_]+$" },
+      "slug": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+      "name": { "type": "string", "minLength": 1 },
+      "classId": { "type": "string", "pattern": "^class_[a-z0-9_]+$" },
+      "sourceCardId": { "type": ["string", "null"], "pattern": "^card_[a-z0-9_]+$" },
+      "description": { "type": "string", "minLength": 1 },
+      "stats": { "type": "object" },
+      "effects": { "type": "array", "items": { "type": "object" } },
+      "tags": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+      "status": { "enum": ["draft", "provisional", "approved", "deprecated"] }
+    }
+  }
+}

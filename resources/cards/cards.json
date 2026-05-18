@@ -1,0 +1,64 @@
+[
+  {
+    "name": "Defecto",
+    "rarity": "perro",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Unidad de combate básica. Inflige daño extra al atacar.",
+    "copies": 8,
+    "stats": {
+      "attack": 3,
+      "health": 6
+    },
+    "effects": [
+      {
+        "type": "damage",
+        "target": "enemy",
+        "value": 1,
+        "description": "Arañazo: inflige 1 daño adicional al atacar."
+      }
+    ]
+  },
+  {
+    "name": "Curador",
+    "rarity": "perro",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "ally",
+    "timing": "action",
+    "description": "Unidad de soporte. Puede curar 3 HP a una unidad aliada.",
+    "copies": 5,
+    "stats": {
+      "attack": 1,
+      "health": 5
+    },
+    "effects": [
+      {
+        "type": "heal",
+        "target": "ally",
+        "value": 3,
+        "description": "Vendas: restaura 3 HP a una unidad aliada."
+      }
+    ]
+  },
+  {
+    "name": "Amuleto de Fuerza",
+    "rarity": "perro",
+    "type": "Objeto",
+    "cardClass": "object",
+    "target": "ally",
+    "timing": "action",
+    "description": "Multiplica el daño de una unidad aliada por 1.5 de forma permanente.",
+    "copies": 4,
+    "effects": [
+      {
+        "type": "bonus_attack",
+        "target": "ally",
+        "value": 0,
+        "description": "Aplica x1.5 al ataque de una unidad aliada."
+      }
+    ]
+  }
+]

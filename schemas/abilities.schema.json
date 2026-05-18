@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fightingmates.local/schemas/abilities.schema.json",
+  "title": "FightingMates Abilities",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "slug", "name", "type", "description", "rules", "status"],
+    "properties": {
+      "id": { "type": "string", "pattern": "^ability_[a-z0-9_]+$" },
+      "slug": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+      "name": { "type": "string", "minLength": 1 },
+      "type": { "enum": ["status", "random_effect", "defensive_reduction", "area_damage"] },
+      "description": { "type": "string", "minLength": 1 },
+      "rules": { "type": "object" },
+      "status": { "enum": ["draft", "provisional", "approved", "deprecated"] }
+    }
+  }
+}

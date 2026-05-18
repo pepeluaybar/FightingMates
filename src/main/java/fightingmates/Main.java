@@ -1,15 +1,15 @@
 package fightingmates;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
  * Punto de entrada de FightingMates v1.
  * Gestiona la interfaz de consola y el bucle principal de la partida.
  *
- * Cartas disponibles en v1:
- *   - Defecto      : Unidad ofensiva básica (ATK 3, VID 6). Habilidad: +1 daño extra al atacar.
- *   - Curador      : Unidad de soporte (ATK 1, VID 5). Habilidad: cura 3 HP a una unidad aliada.
- *   - Amuleto Fuerza: Objeto. Aplica x1.5 de daño a la unidad aliada sobre la que se usa.
+ * Las cartas se cargan desde JSON al arrancar. Main solo coordina la carga,
+ * construcción de mazos e interfaz de consola.
  */
 public class Main {
 
@@ -20,11 +20,16 @@ public class Main {
     public static void main(String[] args) {
         imprimirBanner();
 
+        ConfiguracionArranque config = leerConfiguracion(args);
+        List<Carta> cartasBase = cargarCartasIniciales(config.cardsPath);
+        imprimirCartasCargadas(cartasBase);
+        if (config.listCardsOnly) return;
+
         String nombre1 = pedirNombre("Jugador 1");
         String nombre2 = pedirNombre("Jugador 2");
 
-        Jugador j1 = new Jugador(nombre1, Jugador.VIDA_INICIAL, crearMazo());
-        Jugador j2 = new Jugador(nombre2, Jugador.VIDA_INICIAL, crearMazo());
+        Jugador j1 = new Jugador(nombre1, Jugador.VIDA_INICIAL, crearMazo(cartasBase));
+        Jugador j2 = new Jugador(nombre2, Jugador.VIDA_INICIAL, crearMazo(cartasBase));
 
         Juego juego = new Juego(j1, j2);
         juego.iniciarPartida();
@@ -120,7 +125,6 @@ public class Main {
                     println("  ✗ Ya usaste un objeto este turno.");
                     continue;
                 }
-                Objeto obj = (Objeto) carta;
                 Unidad objetivo = elegirUnidadAliada(juego.getTablero(), actual, "sobre la que usar el objeto");
                 if (objetivo == null) continue;
                 if (actual.usarObjeto(indice, objetivo)) {
@@ -294,6 +298,10 @@ public class Main {
         String nombre = "";
         while (nombre.isEmpty()) {
             print("Introduce el nombre del " + etiqueta + ": ");
+            if (!scanner.hasNextLine()) {
+                println("");
+                return etiqueta;
+            }
             nombre = scanner.nextLine().trim();
             if (nombre.isEmpty()) println("  El nombre no puede estar vacío.");
         }
@@ -325,6 +333,10 @@ public class Main {
     /** Lee un entero entre min y max inclusive, repitiendo hasta obtener entrada válida. */
     private static int leerEntero(int min, int max) {
         while (true) {
+            if (!scanner.hasNextLine()) {
+                println("  Entrada finalizada. Se elige " + min + " por defecto.");
+                return min;
+            }
             try {
                 String linea = scanner.nextLine().trim();
                 int val = Integer.parseInt(linea);
@@ -336,56 +348,119 @@ public class Main {
 
     private static void pausa() {
         println("\n  [Pulsa ENTER para continuar...]");
-        scanner.nextLine();
+        if (scanner.hasNextLine()) scanner.nextLine();
     }
 
     private static void print(String msg)   { System.out.print(msg); }
     private static void println(String msg) { System.out.println(msg); }
 
-    // ─── Fábrica de cartas ────────────────────────────────────────────────────
+    // ─── Carga de cartas ──────────────────────────────────────────────────────
 
-    /**
-     * Crea el mazo estándar de v1 (17 cartas):
-     *   8x Defecto | 5x Curador | 4x Amuleto de Fuerza
-     */
-    private static Mazo crearMazo() {
+    private static ConfiguracionArranque leerConfiguracion(String[] args) {
+        ConfiguracionArranque config = new ConfiguracionArranque();
+        config.cardsPath = JsonCardLoader.DEFAULT_CARDS_PATH;
+        config.listCardsOnly = false;
+
+        for (int i = 0; args != null && i < args.length; i++) {
+            if ("--list-cards".equals(args[i])) {
+                config.listCardsOnly = true;
+            } else if ("--cards".equals(args[i]) && i + 1 < args.length) {
+                config.cardsPath = args[++i];
+            } else if (!args[i].startsWith("--")) {
+                config.cardsPath = args[i];
+            }
+        }
+        return config;
+    }
+
+    private static List<Carta> cargarCartasIniciales(String cardsPath) {
+        JsonCardLoader loader = new JsonCardLoader();
+        try {
+            List<Carta> cartas = loader.load(cardsPath);
+            println("\n✓ Cartas cargadas desde JSON: " + cartas.size() + " (" + cardsPath + ")");
+            if (cartas.isEmpty()) {
+                println("  ⚠ El JSON no contiene cartas. Se usará el mazo interno de emergencia.");
+                return crearCartasInternas();
+            }
+            return cartas;
+        } catch (CardLoadException e) {
+            println("\n✗ Error cargando cartas desde JSON: " + e.getMessage());
+            println("  Se usará el mazo interno de emergencia para poder iniciar el juego.");
+            return crearCartasInternas();
+        }
+    }
+
+    private static void imprimirCartasCargadas(List<Carta> cartas) {
+        println("\nCartas disponibles (" + cartas.size() + "):");
+        for (int i = 0; i < cartas.size(); i++) {
+            println("  [" + (i + 1) + "] " + cartaResumen(cartas.get(i)));
+        }
+    }
+
+    /** Construye un mazo con copias independientes de las cartas cargadas. */
+    private static Mazo crearMazo(List<Carta> cartasBase) {
         Mazo mazo = new Mazo();
-        for (int i = 1; i <= 8;  i++) mazo.anadirCarta(crearDefecto(i));
-        for (int i = 9; i <= 13; i++) mazo.anadirCarta(crearCurador(i));
-        for (int i = 14; i <= 17; i++) mazo.anadirCarta(crearAmuletoDeFuerza(i));
+        for (Carta carta : cartasBase) {
+            if (!mazo.anadirCarta(copiarCarta(carta))) break;
+        }
         return mazo;
     }
 
-    /**
-     * Defecto — unidad ofensiva básica.
-     * ATK 3 | VID 6 | Habilidad: Arañazo (1 daño extra al atacar)
-     */
+    private static Carta copiarCarta(Carta carta) {
+        if (carta instanceof Unidad) return new Unidad((Unidad) carta);
+        if (carta instanceof Objeto) return new Objeto((Objeto) carta);
+        return carta;
+    }
+
+    private static List<Carta> crearCartasInternas() {
+        List<Carta> cartas = new ArrayList<>();
+        for (int i = 1; i <= 8;  i++) cartas.add(crearDefecto(i));
+        for (int i = 9; i <= 13; i++) cartas.add(crearCurador(i));
+        for (int i = 14; i <= 17; i++) cartas.add(crearAmuletoDeFuerza(i));
+        return cartas;
+    }
+
+    /** Defecto — unidad ofensiva básica. */
     private static Unidad crearDefecto(int id) {
-        return new Unidad(id, "Defecto", "Unidad de combate básica. Inflige daño extra al atacar.",
+        Unidad unidad = new Unidad(id, "Defecto", "Unidad de combate básica. Inflige daño extra al atacar.",
                 3, 6,
                 new HabilidadDanio("Arañazo", "Inflige 1 daño adicional al atacar", 1),
                 "", 0, true);
+        unidad.setRarity("perro");
+        unidad.setType("Personaje");
+        unidad.setTarget("enemy");
+        unidad.setTiming("action");
+        return unidad;
     }
 
-    /**
-     * Curador — unidad de soporte.
-     * ATK 1 | VID 5 | Habilidad: Vendas (cura 3 HP a una unidad aliada; NO puede curar enemigas ni al jugador)
-     */
+    /** Curador — unidad de soporte. */
     private static Unidad crearCurador(int id) {
-        return new Unidad(id, "Curador",
+        Unidad unidad = new Unidad(id, "Curador",
                 "Unidad de soporte. Puede curar 3 HP a una unidad aliada (solo aliadas).",
                 1, 5,
                 new HabilidadCura("Vendas", "Restaura 3 HP a una unidad aliada", 3, true),
                 "", 0, true);
+        unidad.setRarity("perro");
+        unidad.setType("Personaje");
+        unidad.setTarget("ally");
+        unidad.setTiming("action");
+        return unidad;
     }
 
-    /**
-     * Amuleto de Fuerza — objeto de potenciación.
-     * Al usarlo sobre una unidad aliada, su daño se multiplica por 1.5 permanentemente.
-     */
+    /** Amuleto de Fuerza — objeto de potenciación. */
     private static Objeto crearAmuletoDeFuerza(int id) {
-        return new Objeto(id, "Amuleto de Fuerza",
+        Objeto objeto = new Objeto(id, "Amuleto de Fuerza",
                 "Multiplica el daño de una unidad aliada por 1.5 de forma permanente.",
                 "BONUS_ATAQUE", 0);
+        objeto.setRarity("perro");
+        objeto.setType("Objeto");
+        objeto.setTarget("ally");
+        objeto.setTiming("action");
+        return objeto;
+    }
+
+    private static class ConfiguracionArranque {
+        private String cardsPath;
+        private boolean listCardsOnly;
     }
 }
