@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Sin Efectos Null",
+    "rarity": "perro",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Carta inválida porque effects es null.",
+    "effects": null
+  }
+]

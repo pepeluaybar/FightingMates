@@ -51,3 +51,85 @@ Los esquemas JSON principales están en `schemas/`:
 - `schemas/abilities.schema.json`
 
 Como comprobación mínima, todos los archivos `.json` deben poder parsearse como JSON válido. Para validación completa, se recomienda usar un validador compatible con JSON Schema draft 2020-12.
+
+## Carga de cartas en Java
+
+El juego de consola carga sus cartas iniciales desde `resources/cards/cards.json` mediante `JsonCardLoader`, invocado desde `Main` al arrancar.
+
+### Formato runtime de `resources/cards/cards.json`
+
+El archivo debe contener una lista JSON. Cada carta acepta estos campos:
+
+| Campo | Obligatorio | Descripción |
+| --- | --- | --- |
+| `name` | Sí | Nombre visible de la carta. No puede estar vacío. |
+| `rarity` | Sí | Rareza visible o de diseño, por ejemplo `perro` u `oca`. No puede estar vacía. |
+| `type` | Sí | Tipo visible de carta, por ejemplo `Personaje` u `Objeto`. No puede estar vacío. |
+| `cardClass` | No | Clase ejecutable para el motor: `unit`/`personaje` o `object`/`objeto`. Si falta, se asume `unit`. |
+| `target` | Sí | Objetivo principal del efecto, por ejemplo `enemy`, `ally` o `self`. |
+| `timing` | Sí | Momento de uso, por ejemplo `action` o `passive`. |
+| `description` | Sí | Texto visible para el jugador. Debe existir y no estar vacío. |
+| `copies` | No | Número de copias que se expanden al cargar. Si falta, vale `1`. |
+| `stats.attack` | No | Ataque de una unidad. Si falta, vale `1`. |
+| `stats.health` | No | Vida máxima de una unidad. Si falta, vale `5`. |
+| `effects` | Sí | Lista de efectos. Puede estar vacía, pero nunca ser `null`. |
+
+Efectos ejecutables por el motor v1:
+
+- `damage`: se transforma en `HabilidadDanio` en unidades o `DANIO` en objetos.
+- `heal`: se transforma en `HabilidadCura` en unidades o `CURA` en objetos.
+- `status` / `apply_status`: se transforma en `HabilidadEstado` en unidades.
+- `bonus_attack`: se transforma en `BONUS_ATAQUE` para objetos.
+- `player_damage`: se transforma en `DANIO_JUGADOR` para objetos.
+
+El loader también reconoce los efectos del diseño de datos (`buff_damage`, `reduce_damage`, `summon`, etc.) para poder conservarlos como metadatos, aunque la v1 del motor no ejecute todos todavía.
+
+### Ejemplo mínimo
+
+```json
+[
+  {
+    "name": "Pepelu Delegado",
+    "rarity": "oca",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Carta especial de Pepelu.",
+    "stats": {
+      "attack": 2,
+      "health": 6
+    },
+    "effects": [
+      {
+        "type": "damage",
+        "target": "enemy",
+        "value": 2,
+        "description": "Hace 2 puntos de daño."
+      }
+    ]
+  }
+]
+```
+
+### Cómo añadir nuevas cartas
+
+1. Edita `resources/cards/cards.json`.
+2. Añade un nuevo objeto a la lista con los campos obligatorios.
+3. Usa `cardClass: "unit"` para cartas que entran al tablero como `Unidad` o `cardClass: "object"` para objetos que se consumen desde la mano.
+4. Añade `stats.attack` y `stats.health` si es una unidad.
+5. Añade uno o varios efectos en `effects`; si todavía no tienen ejecución real, quedarán guardados como metadatos de la carta.
+6. Ejecuta `java -cp out fightingmates.Main --list-cards` tras compilar para comprobar que el archivo carga correctamente.
+
+### Errores controlados
+
+`Main` captura los errores de carga y muestra mensajes claros para:
+
+- archivo no encontrado;
+- JSON mal formado;
+- campos obligatorios vacíos;
+- `effects` ausente o `null`;
+- efecto desconocido.
+
+Si la carga falla, el juego usa un mazo interno de emergencia para no terminar con una excepción sin explicación.
+=======

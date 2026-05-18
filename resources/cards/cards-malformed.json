@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Carta Rota",
+    "rarity": "perro",
+    "type": "Personaje",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Este JSON está mal cerrado",
+    "effects": [
+      { "type": "damage", "value": 2 }
+    ]
+  }

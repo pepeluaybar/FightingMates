@@ -43,6 +43,7 @@ public class Unidad extends Carta {
                 otra.duracionEstado, otra.activa);
         this.vida = otra.vida;
         this.multiplicadorAtaque = otra.multiplicadorAtaque;
+        copiarMetadatosDesde(otra);
     }
 
     // ─── Combate ──────────────────────────────────────────────────────────────

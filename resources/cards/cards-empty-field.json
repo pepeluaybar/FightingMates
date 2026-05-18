@@ -1,0 +1,12 @@
+[
+  {
+    "name": "",
+    "rarity": "perro",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Carta inválida por nombre vacío.",
+    "effects": []
+  }
+]

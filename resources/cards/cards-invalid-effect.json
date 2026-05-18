@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Efecto Desconocido",
+    "rarity": "perro",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Carta para comprobar errores claros de efecto.",
+    "effects": [
+      {
+        "type": "teleport_unknown",
+        "value": 1,
+        "description": "Este efecto no existe."
+      }
+    ]
+  }
+]
