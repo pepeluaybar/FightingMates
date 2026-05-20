@@ -112,7 +112,7 @@ public class Unidad extends Carta {
     public int getDuracionEstado() { return duracionEstado; }
     public void setDuracionEstado(int duracionEstado) { this.duracionEstado = Math.max(0, duracionEstado); }
 
-    public boolean isActiva() { return activa; }
+    public boolean esActiva() { return activa; }
     public void setActiva(boolean activa) { this.activa = activa; }
 
     public float getMultiplicadorAtaque() { return multiplicadorAtaque; }

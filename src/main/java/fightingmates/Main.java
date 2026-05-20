@@ -7,16 +7,16 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        String cardsPath = JsonCardLoader.DEFAULT_CARDS_PATH;
+        String rutaCartas = JsonCardLoader.RUTA_CARTEAS_POR_DEFECTO;
         for (int i = 0; i < args.length - 1; i++) {
             if ("--cards".equals(args[i])) {
-                cardsPath = args[i + 1];
+                rutaCartas = args[i + 1];
             }
         }
 
         ArrayList<Carta> cartas;
         try {
-            cartas = new JsonCardLoader().load(cardsPath);
+            cartas = new JsonCardLoader().cargar(rutaCartas);
         } catch (CardLoadException e) {
             System.out.println("Error cargando cartas: " + e.getMessage());
             return;

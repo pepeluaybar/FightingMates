@@ -12,11 +12,11 @@ public abstract class Carta {
     private int id;
     private String nombre;
     private String descripcion;
-    private String rarity;
-    private String type;
-    private String target;
-    private String timing;
-    private List<Effect> effects;
+    private String rareza;
+    private String tipo;
+    private String objetivo;
+    private String momento; // Timing
+    private List<Efecto> efectos;
 
     // Constructor por defecto
     public Carta() {
@@ -28,11 +28,11 @@ public abstract class Carta {
         this.id = id;
         this.nombre = nombre != null ? nombre : "";
         this.descripcion = descripcion != null ? descripcion : "";
-        this.rarity = "";
-        this.type = "";
-        this.target = "";
-        this.timing = "";
-        this.effects = new ArrayList<>();
+        this.rareza = "";
+        this.tipo = "";
+        this.objetivo = "";
+        this.momento = "";
+        this.efectos = new ArrayList<>();
     }
 
     // Constructor de copia
@@ -43,11 +43,11 @@ public abstract class Carta {
 
     protected void copiarMetadatosDesde(Carta otra) {
         if (otra == null) return;
-        this.rarity = otra.rarity;
-        this.type = otra.type;
-        this.target = otra.target;
-        this.timing = otra.timing;
-        setEffects(otra.effects);
+        this.rareza = otra.rareza;
+        this.tipo = otra.tipo;
+        this.objetivo = otra.objetivo;
+        this.momento = otra.momento;
+        setEfectos(otra.efectos);
     }
 
     public int getId() { return id; }
@@ -59,29 +59,29 @@ public abstract class Carta {
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion != null ? descripcion : ""; }
 
-    public String getRarity() { return rarity; }
-    public void setRarity(String rarity) { this.rarity = rarity != null ? rarity : ""; }
+    public String getRareza() { return rareza; }
+    public void setRareza(String rareza) { this.rareza = rareza != null ? rareza : ""; }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type != null ? type : ""; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo != null ? tipo : ""; }
 
-    public String getTarget() { return target; }
-    public void setTarget(String target) { this.target = target != null ? target : ""; }
+    public String getObjetivo() { return objetivo; }
+    public void setObjetivo(String objetivo) { this.objetivo = objetivo != null ? objetivo : ""; }
 
-    public String getTiming() { return timing; }
-    public void setTiming(String timing) { this.timing = timing != null ? timing : ""; }
+    public String getMomento() { return momento; }
+    public void setMomento(String momento) { this.momento = momento != null ? momento : ""; }
 
-    public List<Effect> getEffects() { return Collections.unmodifiableList(effects); }
-    public void setEffects(List<Effect> effects) {
-        this.effects = new ArrayList<>();
-        if (effects == null) return;
-        for (Effect effect : effects) {
-            if (effect != null) this.effects.add(new Effect(effect));
+    public List<Efecto> getEfectos() { return Collections.unmodifiableList(efectos); }
+    public void setEfectos(List<Efecto> efectos) {
+        this.efectos = new ArrayList<>();
+        if (efectos == null) return;
+        for (Efecto efecto : efectos) {
+            if (efecto != null) this.efectos.add(new Efecto(efecto));
         }
     }
 
     @Override
     public String toString() {
-        return "Carta{id=" + id + ", nombre='" + nombre + "', rarity='" + rarity + "', type='" + type + "'}";
+        return "Carta{id=" + id + ", nombre='" + nombre + "', rareza='" + rareza + "', tipo='" + tipo + "'}";
     }
 }

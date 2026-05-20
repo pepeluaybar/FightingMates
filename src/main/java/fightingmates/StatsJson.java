@@ -1,14 +1,15 @@
 package fightingmates;
 
 public class StatsJson {
-    private Integer attack;
-    private Integer health;
+    private Integer ataque;
+    private Integer salud;
 
     public StatsJson() {
     }
 
-    public Integer getAttack() { return attack; }
-    public void setAttack(Integer attack) { this.attack = attack; }
-    public Integer getHealth() { return health; }
-    public void setHealth(Integer health) { this.health = health; }
+    public Integer getAtaque() { return ataque; }
+    public void setAtaque(Integer ataque) { this.ataque = ataque; }
+
+    public Integer getSalud() { return salud; }
+    public void setSalud(Integer salud) { this.salud = salud; }
 }

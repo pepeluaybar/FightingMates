@@ -160,7 +160,7 @@ public class Jugador {
     public Carta[] getDescarte() { return descarte; }
     public int getNumCartasDescarte() { return numCartasDescarte; }
 
-    public boolean isPrimerTurno() { return primerTurno; }
+    public boolean esPrimerTurno() { return primerTurno; }
     public void setPrimerTurno(boolean primerTurno) { this.primerTurno = primerTurno; }
 
     public Tablero getTablero() { return tablero; }

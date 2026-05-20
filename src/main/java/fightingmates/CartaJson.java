@@ -3,47 +3,59 @@ package fightingmates;
 import java.util.ArrayList;
 
 public class CartaJson {
-    private String name;
-    private String rarity;
-    private String type;
-    private String target;
-    private String timing;
-    private String description;
-    private String cardClass;
-    private String clazz;
-    private Integer copies;
-    private Integer attack;
-    private Integer health;
-    private StatsJson stats;
-    private ArrayList<EffectJson> effects;
+    private String nombre;
+    private String rareza;
+    private String tipo;
+    private String objetivo;
+    private String momento;
+    private String descripcion;
+    private String claseCarta;
+    private String clase;
+    private Integer copias;
+    private Integer ataque;
+    private Integer salud;
+    private StatsJson estadisticas;
+    private ArrayList<EfectoJson> efectos;
 
     public CartaJson() {
     }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getRarity() { return rarity; }
-    public void setRarity(String rarity) { this.rarity = rarity; }
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
-    public String getTarget() { return target; }
-    public void setTarget(String target) { this.target = target; }
-    public String getTiming() { return timing; }
-    public void setTiming(String timing) { this.timing = timing; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public String getCardClass() { return cardClass; }
-    public void setCardClass(String cardClass) { this.cardClass = cardClass; }
-    public String getClazz() { return clazz; }
-    public void setClazz(String clazz) { this.clazz = clazz; }
-    public Integer getCopies() { return copies; }
-    public void setCopies(Integer copies) { this.copies = copies; }
-    public Integer getAttack() { return attack; }
-    public void setAttack(Integer attack) { this.attack = attack; }
-    public Integer getHealth() { return health; }
-    public void setHealth(Integer health) { this.health = health; }
-    public StatsJson getStats() { return stats; }
-    public void setStats(StatsJson stats) { this.stats = stats; }
-    public ArrayList<EffectJson> getEffects() { return effects; }
-    public void setEffects(ArrayList<EffectJson> effects) { this.effects = effects; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getRareza() { return rareza; }
+    public void setRareza(String rareza) { this.rareza = rareza; }
+
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+
+    public String getObjetivo() { return objetivo; }
+    public void setObjetivo(String objetivo) { this.objetivo = objetivo; }
+
+    public String getMomento() { return momento; }
+    public void setMomento(String momento) { this.momento = momento; }
+
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    public String getClaseCarta() { return claseCarta; }
+    public void setClaseCarta(String claseCarta) { this.claseCarta = claseCarta; }
+
+    public String getClase() { return clase; }
+    public void setClase(String clase) { this.clase = clase; }
+
+    public Integer getCopias() { return copias; }
+    public void setCopias(Integer copias) { this.copias = copias; }
+
+    public Integer getAtaque() { return ataque; }
+    public void setAtaque(Integer ataque) { this.ataque = ataque; }
+
+    public Integer getSalud() { return salud; }
+    public void setSalud(Integer salud) { this.salud = salud; }
+
+    public StatsJson getEstadisticas() { return estadisticas; }
+    public void setEstadisticas(StatsJson estadisticas) { this.estadisticas = estadisticas; }
+
+    public ArrayList<EfectoJson> getEfectos() { return efectos; }
+    public void setEfectos(ArrayList<EfectoJson> efectos) { this.efectos = efectos; }
 }

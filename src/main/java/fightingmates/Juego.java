@@ -19,7 +19,7 @@ public class Juego {
     // Constructor por defecto (jugadores sin nombre real, para pruebas)
     public Juego() {
         this(new Jugador("J1", Jugador.VIDA_INICIAL, new Mazo()),
-             new Jugador("J2", Jugador.VIDA_INICIAL, new Mazo()));
+                new Jugador("J2", Jugador.VIDA_INICIAL, new Mazo()));
     }
 
     // Constructor por parámetros

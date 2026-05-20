@@ -11,148 +11,148 @@ import java.util.Locale;
 
 /** Carga cartas del juego desde JSON con Gson y clases simples. */
 public class JsonCardLoader {
-    public static final String DEFAULT_CARDS_PATH = "resources/cards/cards.json";
+    public static final String RUTA_CARTEAS_POR_DEFECTO = "resources/cards/cards.json";
 
-    public ArrayList<Carta> load(String pathText) throws CardLoadException {
-        String normalizedPath = isBlank(pathText) ? DEFAULT_CARDS_PATH : pathText;
-        File file = new File(normalizedPath);
-        if (!file.exists()) {
-            throw new CardLoadException("Archivo no encontrado: " + normalizedPath);
+    public ArrayList<Carta> cargar(String rutaTexto) throws CardLoadException {
+        String rutaNormalizada = esVacio(rutaTexto) ? RUTA_CARTEAS_POR_DEFECTO : rutaTexto;
+        File archivo = new File(rutaNormalizada);
+        if (!archivo.exists()) {
+            throw new CardLoadException("Archivo no encontrado: " + rutaNormalizada);
         }
 
-        CartaJson[] cardsData;
-        try (FileReader reader = new FileReader(file)) {
-            cardsData = new Gson().fromJson(reader, CartaJson[].class);
+        CartaJson[] datosCartas;
+        try (FileReader lector = new FileReader(archivo)) {
+            datosCartas = new Gson().fromJson(lector, CartaJson[].class);
         } catch (FileNotFoundException e) {
-            throw new CardLoadException("No se pudo leer el archivo JSON de cartas: " + normalizedPath, e);
+            throw new CardLoadException("No se pudo leer el archivo JSON de cartas: " + rutaNormalizada, e);
         } catch (JsonSyntaxException e) {
             throw new CardLoadException("JSON mal formado: " + e.getMessage(), e);
         } catch (Exception e) {
-            throw new CardLoadException("Error leyendo el JSON de cartas: " + normalizedPath, e);
+            throw new CardLoadException("Error leyendo el JSON de cartas: " + rutaNormalizada, e);
         }
 
-        if (cardsData == null) {
+        if (datosCartas == null) {
             throw new CardLoadException("JSON mal formado: el archivo de cartas debe contener una lista de cartas");
         }
 
-        ArrayList<Carta> cards = new ArrayList<>();
-        int nextId = 1;
-        for (int i = 0; i < cardsData.length; i++) {
-            CartaJson cardData = cardsData[i];
-            int copies = cardData != null && cardData.getCopies() != null ? Math.max(1, cardData.getCopies()) : 1;
-            for (int copy = 0; copy < copies; copy++) {
-                cards.add(toCard(cardData, nextId++, i + 1));
+        ArrayList<Carta> cartas = new ArrayList<>();
+        int siguienteId = 1;
+        for (int i = 0; i < datosCartas.length; i++) {
+            CartaJson datoCarta = datosCartas[i];
+            int copias = datoCarta != null && datoCarta.getCopias() != null ? Math.max(1, datoCarta.getCopias()) : 1;
+            for (int copia = 0; copia < copias; copia++) {
+                cartas.add(aCarta(datoCarta, siguienteId++, i + 1));
             }
         }
-        return cards;
+        return cartas;
     }
 
-    private Carta toCard(CartaJson data, int id, int cardNumber) throws CardLoadException {
-        if (data == null) {
-            throw new CardLoadException("JSON mal formado: la carta #" + cardNumber + " no es un objeto JSON");
+    private Carta aCarta(CartaJson datos, int id, int numeroCarta) throws CardLoadException {
+        if (datos == null) {
+            throw new CardLoadException("JSON mal formado: la carta #" + numeroCarta + " no es un objeto JSON");
         }
 
-        String name = requiredText(data.getName(), "name", cardNumber);
-        String rarity = requiredText(data.getRarity(), "rarity", cardNumber);
-        String type = requiredText(data.getType(), "type", cardNumber);
-        String target = requiredText(data.getTarget(), "target", cardNumber);
-        String timing = requiredText(data.getTiming(), "timing", cardNumber);
-        String description = requiredText(data.getDescription(), "description", cardNumber);
-        ArrayList<Effect> effects = parseEffects(data.getEffects(), cardNumber);
+        String nombre = textoRequerido(datos.getNombre(), "nombre", numeroCarta);
+        String rareza = textoRequerido(datos.getRareza(), "rareza", numeroCarta);
+        String tipo = textoRequerido(datos.getTipo(), "tipo", numeroCarta);
+        String objetivo = textoRequerido(datos.getObjetivo(), "objetivo", numeroCarta);
+        String momento = textoRequerido(datos.getMomento(), "momento", numeroCarta);
+        String descripcion = textoRequerido(datos.getDescripcion(), "descripcion", numeroCarta);
+        ArrayList<Efecto> efectos = analizarEfectos(datos.getEfectos(), numeroCarta);
 
-        String rawClass = !isBlank(data.getCardClass()) ? data.getCardClass() : data.getClazz();
-        String cardClass = isBlank(rawClass) ? "unit" : rawClass;
+        String claseOriginal = !esVacio(datos.getClaseCarta()) ? datos.getClaseCarta() : datos.getClase();
+        String claseCarta = esVacio(claseOriginal) ? "unit" : claseOriginal;
 
-        Carta card;
-        if (isObjectClass(cardClass)) {
-            card = createObject(id, name, description, effects);
+        Carta carta;
+        if (esClaseObjeto(claseCarta)) {
+            carta = crearObjeto(id, nombre, descripcion, efectos);
         } else {
-            card = createUnit(id, name, description, data, effects);
+            carta = crearUnidad(id, nombre, descripcion, datos, efectos);
         }
 
-        card.setRarity(rarity);
-        card.setType(type);
-        card.setTarget(target);
-        card.setTiming(timing);
-        card.setEffects(effects);
-        return card;
+        carta.setRareza(rareza);
+        carta.setTipo(tipo);
+        carta.setObjetivo(objetivo);
+        carta.setMomento(momento);
+        carta.setEfectos(efectos);
+        return carta;
     }
 
-    private Unidad createUnit(int id, String name, String description, CartaJson data, ArrayList<Effect> effects) {
-        int attack = getAttack(data);
-        int health = getHealth(data);
-        Habilidad ability = createAbility(name, effects);
-        return new Unidad(id, name, description, attack, health, ability, "", 0, true);
+    private Unidad crearUnidad(int id, String nombre, String descripcion, CartaJson datos, ArrayList<Efecto> efectos) {
+        int ataque = obtenerAtaque(datos);
+        int salud = obtenerSalud(datos);
+        Habilidad habilidad = crearHabilidad(nombre, efectos);
+        return new Unidad(id, nombre, descripcion, ataque, salud, habilidad, "", 0, true);
     }
 
-    private int getAttack(CartaJson data) {
-        if (data.getStats() != null && data.getStats().getAttack() != null) return data.getStats().getAttack();
-        if (data.getAttack() != null) return data.getAttack();
+    private int obtenerAtaque(CartaJson datos) {
+        if (datos.getEstadisticas() != null && datos.getEstadisticas().getAtaque() != null) return datos.getEstadisticas().getAtaque();
+        if (datos.getAtaque() != null) return datos.getAtaque();
         return 1;
     }
 
-    private int getHealth(CartaJson data) {
-        if (data.getStats() != null && data.getStats().getHealth() != null) return data.getStats().getHealth();
-        if (data.getHealth() != null) return data.getHealth();
+    private int obtenerSalud(CartaJson datos) {
+        if (datos.getEstadisticas() != null && datos.getEstadisticas().getSalud() != null) return datos.getEstadisticas().getSalud();
+        if (datos.getSalud() != null) return datos.getSalud();
         return 5;
     }
 
-    private Objeto createObject(int id, String name, String description, ArrayList<Effect> effects) {
-        Effect mainEffect = effects.isEmpty() ? new Effect() : effects.get(0);
-        String objectEffect = toObjectEffectType(mainEffect.getType());
-        return new Objeto(id, name, description, objectEffect, mainEffect.getValue());
+    private Objeto crearObjeto(int id, String nombre, String descripcion, ArrayList<Efecto> efectos) {
+        Efecto efectoPrincipal = efectos.isEmpty() ? new Efecto() : efectos.get(0);
+        String efectoObjeto = aTipoEfectoObjeto(efectoPrincipal.getTipo());
+        return new Objeto(id, nombre, descripcion, efectoObjeto, efectoPrincipal.getValor());
     }
 
-    private Habilidad createAbility(String cardName, ArrayList<Effect> effects) {
-        if (effects.isEmpty()) return null;
-        Effect effect = effects.get(0);
-        String type = normalize(effect.getType());
-        String effectDescription = !isBlank(effect.getDescription()) ? effect.getDescription() : "Efecto de " + cardName;
-        String abilityName = extractAbilityName(effectDescription, cardName);
+    private Habilidad crearHabilidad(String nombreCarta, ArrayList<Efecto> efectos) {
+        if (efectos.isEmpty()) return null;
+        Efecto efecto = efectos.get(0);
+        String tipo = normalizar(efecto.getTipo());
+        String descripcionEfecto = !esVacio(efecto.getDescripcion()) ? efecto.getDescripcion() : "Efecto de " + nombreCarta;
+        String nombreHabilidad = extraerNombreHabilidad(descripcionEfecto, nombreCarta);
 
-        switch (type) {
+        switch (tipo) {
             case "damage":
             case "damage_percent_max_hp":
-                return new HabilidadDanio(abilityName, effectDescription, effect.getValue());
+                return new HabilidadDanio(nombreHabilidad, descripcionEfecto, efecto.getValor());
             case "heal":
             case "heal_percent_max_hp":
-                return new HabilidadCura(abilityName, effectDescription, effect.getValue(), isAllyTarget(effect.getTarget()));
+                return new HabilidadCura(nombreHabilidad, descripcionEfecto, efecto.getValor(), esObjetivoAliado(efecto.getObjetivo()));
             case "status":
             case "apply_status":
-                String status = !isBlank(effect.getTextValue()) ? effect.getTextValue() : abilityName;
-                return new HabilidadEstado(abilityName, effectDescription, status, Math.max(1, effect.getValue()));
+                String estado = !esVacio(efecto.getValorTexto()) ? efecto.getValorTexto() : nombreHabilidad;
+                return new HabilidadEstado(nombreHabilidad, descripcionEfecto, estado, Math.max(1, efecto.getValor()));
             default:
                 return null;
         }
     }
 
-    private ArrayList<Effect> parseEffects(ArrayList<EffectJson> rawEffects, int cardNumber) throws CardLoadException {
-        if (rawEffects == null) {
-            throw new CardLoadException("Campos obligatorios vacíos: la carta #" + cardNumber + " debe tener 'effects' como lista, aunque esté vacía");
+    private ArrayList<Efecto> analizarEfectos(ArrayList<EfectoJson> efectosCrudos, int numeroCarta) throws CardLoadException {
+        if (efectosCrudos == null) {
+            throw new CardLoadException("Campos obligatorios vacíos: la carta #" + numeroCarta + " debe tener 'effects' como lista, aunque esté vacía");
         }
 
-        ArrayList<Effect> effects = new ArrayList<>();
-        for (int i = 0; i < rawEffects.size(); i++) {
-            EffectJson effectData = rawEffects.get(i);
-            if (effectData == null) {
-                throw new CardLoadException("JSON mal formado: el efecto #" + (i + 1) + " de la carta #" + cardNumber + " no es un objeto");
+        ArrayList<Efecto> efectos = new ArrayList<>();
+        for (int i = 0; i < efectosCrudos.size(); i++) {
+            EfectoJson datoEfecto = efectosCrudos.get(i);
+            if (datoEfecto == null) {
+                throw new CardLoadException("JSON mal formado: el efecto #" + (i + 1) + " de la carta #" + numeroCarta + " no es un objeto");
             }
-            String type = requiredText(effectData.getType(), "type", cardNumber);
-            if (!isSupportedEffect(type)) {
-                throw new CardLoadException("Efecto desconocido: '" + type + "' en la carta #" + cardNumber);
+            String tipo = textoRequerido(datoEfecto.getType(), "tipo", numeroCarta);
+            if (!esEfectoSoportado(tipo)) {
+                throw new CardLoadException("Efecto desconocido: '" + tipo + "' en la carta #" + numeroCarta);
             }
 
-            String target = safeText(effectData.getTarget());
-            String description = safeText(effectData.getDescription());
-            int value = effectData.getValue() != null ? effectData.getValue() : 0;
-            String textValue = !isBlank(effectData.getTextValue()) ? effectData.getTextValue() : safeText(effectData.getStatus());
-            effects.add(new Effect(type, target, value, textValue, description));
+            String objetivo = textoSeguro(datoEfecto.getTarget());
+            String descripcion = textoSeguro(datoEfecto.getDescription());
+            int valor = datoEfecto.getValue() != null ? datoEfecto.getValue() : 0;
+            String valorTexto = !esVacio(datoEfecto.getTextValue()) ? datoEfecto.getTextValue() : textoSeguro(datoEfecto.getStatus());
+            efectos.add(new Efecto(tipo, objetivo, valor, valorTexto, descripcion));
         }
-        return effects;
+        return efectos;
     }
 
-    private boolean isSupportedEffect(String type) {
-        switch (normalize(type)) {
+    private boolean esEfectoSoportado(String tipo) {
+        switch (normalizar(tipo)) {
             case "damage":
             case "heal":
             case "status":
@@ -181,51 +181,51 @@ public class JsonCardLoader {
         }
     }
 
-    private String toObjectEffectType(String effectType) {
-        switch (normalize(effectType)) {
+    private String aTipoEfectoObjeto(String tipoEfecto) {
+        switch (normalizar(tipoEfecto)) {
             case "damage": return "DANIO";
             case "heal": return "CURA";
             case "player_damage": return "DANIO_JUGADOR";
             case "bonus_attack":
             case "buff_damage": return "BONUS_ATAQUE";
-            default: return normalize(effectType).toUpperCase(Locale.ROOT);
+            default: return normalizar(tipoEfecto).toUpperCase(Locale.ROOT);
         }
     }
 
-    private String extractAbilityName(String effectDescription, String cardName) {
-        int separator = effectDescription.indexOf(':');
-        if (separator > 0) return effectDescription.substring(0, separator).trim();
-        return cardName;
+    private String extraerNombreHabilidad(String descripcionEfecto, String nombreCarta) {
+        int separador = descripcionEfecto.indexOf(':');
+        if (separador > 0) return descripcionEfecto.substring(0, separador).trim();
+        return nombreCarta;
     }
 
-    private boolean isObjectClass(String cardClass) {
-        String normalized = normalize(cardClass);
-        return "object".equals(normalized) || "objeto".equals(normalized) || "item".equals(normalized);
+    private boolean esClaseObjeto(String claseCarta) {
+        String normalizado = normalizar(claseCarta);
+        return "object".equals(normalizado) || "objeto".equals(normalizado) || "item".equals(normalizado);
     }
 
-    private boolean isAllyTarget(String target) {
-        String normalized = normalize(target);
-        return "ally".equals(normalized) || "all_allies".equals(normalized) || "self".equals(normalized)
-                || "aliado".equals(normalized) || "jugador".equals(normalized);
+    private boolean esObjetivoAliado(String objetivo) {
+        String normalizado = normalizar(objetivo);
+        return "ally".equals(normalizado) || "all_allies".equals(normalizado) || "self".equals(normalizado)
+                || "aliado".equals(normalizado) || "jugador".equals(normalizado);
     }
 
-    private String requiredText(String value, String field, int cardNumber) throws CardLoadException {
-        String safe = safeText(value);
-        if (isBlank(safe)) {
-            throw new CardLoadException("Campos obligatorios vacíos: '" + field + "' en la carta #" + cardNumber);
+    private String textoRequerido(String valor, String campo, int numeroCarta) throws CardLoadException {
+        String seguro = textoSeguro(valor);
+        if (esVacio(seguro)) {
+            throw new CardLoadException("Campos obligatorios vacíos: '" + campo + "' en la carta #" + numeroCarta);
         }
-        return safe;
+        return seguro;
     }
 
-    private String safeText(String value) {
-        return value == null ? "" : value.trim();
+    private String textoSeguro(String valor) {
+        return valor == null ? "" : valor.trim();
     }
 
-    private boolean isBlank(String value) {
-        return value == null || value.trim().isEmpty();
+    private boolean esVacio(String valor) {
+        return valor == null || valor.trim().isEmpty();
     }
 
-    private String normalize(String value) {
-        return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
+    private String normalizar(String valor) {
+        return valor == null ? "" : valor.trim().toLowerCase(Locale.ROOT);
     }
 }
