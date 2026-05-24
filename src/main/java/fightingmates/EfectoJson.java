@@ -1,26 +1,34 @@
 package fightingmates;
 
+import com.google.gson.annotations.SerializedName;
+
 public class EfectoJson {
-    private String type;
-    private String target;
-    private Integer value;
-    private String textValue;
-    private String status;
-    private String description;
+    @SerializedName(value = "tipo", alternate = {"type"})
+    private String tipo;
+    @SerializedName(value = "objetivo", alternate = {"target"})
+    private String objetivo;
+    @SerializedName(value = "valor", alternate = {"value"})
+    private Integer valor;
+    @SerializedName(value = "valorTexto", alternate = {"textValue"})
+    private String valorTexto;
+    @SerializedName(value = "estado", alternate = {"status"})
+    private String estado;
+    @SerializedName(value = "descripcion", alternate = {"description"})
+    private String descripcion;
 
     public EfectoJson() {
     }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
-    public String getTarget() { return target; }
-    public void setTarget(String target) { this.target = target; }
-    public Integer getValue() { return value; }
-    public void setValue(Integer value) { this.value = value; }
-    public String getTextValue() { return textValue; }
-    public void setTextValue(String textValue) { this.textValue = textValue; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+    public String getObjetivo() { return objetivo; }
+    public void setObjetivo(String objetivo) { this.objetivo = objetivo; }
+    public Integer getValor() { return valor; }
+    public void setValor(Integer valor) { this.valor = valor; }
+    public String getValorTexto() { return valorTexto; }
+    public void setValorTexto(String valorTexto) { this.valorTexto = valorTexto; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 }

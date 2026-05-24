@@ -1,20 +1,35 @@
 package fightingmates;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 public class CartaJson {
+    @SerializedName(value = "nombre", alternate = {"name"})
     private String nombre;
+    @SerializedName(value = "rareza", alternate = {"rarity"})
     private String rareza;
+    @SerializedName(value = "tipo", alternate = {"type"})
     private String tipo;
+    @SerializedName(value = "objetivo", alternate = {"target"})
     private String objetivo;
+    @SerializedName(value = "momento", alternate = {"timing"})
     private String momento;
+    @SerializedName(value = "descripcion", alternate = {"description"})
     private String descripcion;
+    @SerializedName(value = "claseCarta", alternate = {"cardClass"})
     private String claseCarta;
+    @SerializedName(value = "clase", alternate = {"clazz"})
     private String clase;
+    @SerializedName(value = "copias", alternate = {"copies"})
     private Integer copias;
+    @SerializedName(value = "ataque", alternate = {"attack"})
     private Integer ataque;
+    @SerializedName(value = "salud", alternate = {"health"})
     private Integer salud;
+    @SerializedName(value = "estadisticas", alternate = {"stats"})
     private StatsJson estadisticas;
+    @SerializedName(value = "efectos", alternate = {"effects"})
     private ArrayList<EfectoJson> efectos;
 
     public CartaJson() {

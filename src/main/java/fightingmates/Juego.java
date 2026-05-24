@@ -58,6 +58,7 @@ public class Juego {
             jugador1.robarCarta();
             jugador2.robarCarta();
         }
+        prepararInicioTurno(jugadorActual);
     }
 
     /**
@@ -66,7 +67,7 @@ public class Juego {
      * son acciones manuales elegidas por el jugador en su fase de ataque.
      */
     public void ejecutarAtaque(Unidad atacante, Unidad objetivo) {
-        if (atacante == null || !atacante.estaViva()) return;
+        if (atacante == null || !atacante.estaViva() || !atacante.esActiva()) return;
         if (objetivo == null || !objetivo.estaViva()) return;
         atacante.atacar(objetivo);
         // Solo aplica habilidad automáticamente si NO es de curación exclusiva para aliados
@@ -78,8 +79,9 @@ public class Juego {
 
     /** Una unidad ataca directamente al jugador rival (cuando no hay unidades enemigas). */
     public void atacarJugador(Unidad atacante, Jugador defensor) {
-        if (atacante == null || !atacante.estaViva() || defensor == null) return;
+        if (atacante == null || !atacante.estaViva() || !atacante.esActiva() || defensor == null) return;
         defensor.recibirDanio(atacante.getAtaqueEfectivo());
+        atacante.setActiva(false);
     }
 
     /** Devuelve el ganador si hay uno, null si la partida continúa. */
@@ -94,10 +96,24 @@ public class Juego {
         jugadorActual.setPrimerTurno(false);
         turnosJugados++;
         cambiarTurno();
+        prepararInicioTurno(jugadorActual);
     }
 
     public void cambiarTurno() {
         jugadorActual = (jugadorActual == jugador1) ? jugador2 : jugador1;
+    }
+
+    private void prepararInicioTurno(Jugador jugador) {
+        jugador.setObjetoUsadoEsteTurno(false);
+
+        Unidad[] campo = tablero.getCampo(jugador);
+        if (campo == null) return;
+
+        for (Unidad unidad : campo) {
+            if (unidad != null && unidad.estaViva()) {
+                unidad.setActiva(true);
+            }
+        }
     }
 
     // ─── Utilidades ───────────────────────────────────────────────────────────

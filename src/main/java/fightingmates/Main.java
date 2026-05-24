@@ -222,6 +222,11 @@ public class Main {
     }
 
     private static void usarObjeto(Jugador actual, Jugador rival) {
+        if (actual.haUsadoObjetoEsteTurno()) {
+            System.out.println("Ya has usado un objeto este turno.");
+            return;
+        }
+
         mostrarMano(actual);
 
         int indiceCarta = leerEntero("Índice del objeto: ");
@@ -260,6 +265,11 @@ public class Main {
             return;
         }
 
+        if (!atacante.esActiva()) {
+            System.out.println("Esa unidad ya ha actuado este turno.");
+            return;
+        }
+
         if (juego.getTablero().hayUnidadesVivas(rival)) {
             Unidad objetivo = elegirUnidadViva(rival, "Elige unidad enemiga objetivo:");
 
@@ -284,6 +294,11 @@ public class Main {
             return;
         }
 
+        if (!origen.esActiva()) {
+            System.out.println("Esa unidad ya ha actuado este turno.");
+            return;
+        }
+
         if (origen.getHabilidad() == null || !origen.getHabilidad().esSoloAliados()) {
             System.out.println("Esa unidad no tiene una habilidad de cura para aliados.");
             return;
@@ -296,8 +311,13 @@ public class Main {
             return;
         }
 
-        origen.aplicarHabilidad(objetivo, actual, rival);
-        System.out.println(origen.getNombre() + " ha usado su habilidad sobre " + objetivo.getNombre() + ".");
+        boolean habilidadUsada = origen.usarHabilidadManual(objetivo, actual, rival);
+
+        if (habilidadUsada) {
+            System.out.println(origen.getNombre() + " ha usado su habilidad sobre " + objetivo.getNombre() + ".");
+        } else {
+            System.out.println("No se pudo usar la habilidad.");
+        }
     }
 
     // =========================================================
@@ -381,7 +401,7 @@ public class Main {
                     continue;
                 }
 
-                int copias = datos.getCopies() != null ? Math.max(1, datos.getCopies()) : 1;
+                int copias = datos.getCopias() != null ? Math.max(1, datos.getCopias()) : 1;
 
                 for (int c = 0; c < copias; c++) {
                     Carta carta = crearCartaDesdeJson(datos, id);
@@ -405,25 +425,25 @@ public class Main {
     }
 
     private static Carta crearCartaDesdeJson(CartaJson datos, int id) {
-        String nombre = texto(datos.getName());
-        String rareza = texto(datos.getRarity());
-        String tipo = texto(datos.getType());
-        String objetivo = texto(datos.getTarget());
-        String timing = texto(datos.getTiming());
-        String descripcion = texto(datos.getDescription());
+        String nombre = texto(datos.getNombre());
+        String rareza = texto(datos.getRareza());
+        String tipo = texto(datos.getTipo());
+        String objetivo = texto(datos.getObjetivo());
+        String momento = texto(datos.getMomento());
+        String descripcion = texto(datos.getDescripcion());
 
         if (nombre.isEmpty() || rareza.isEmpty() || tipo.isEmpty() || objetivo.isEmpty()
-                || timing.isEmpty() || descripcion.isEmpty()) {
+                || momento.isEmpty() || descripcion.isEmpty()) {
             System.out.println("Carta ignorada por tener campos obligatorios vacíos.");
             return null;
         }
 
-        ArrayList<Effect> efectos = convertirEfectos(datos.getEffects());
+        ArrayList<Efecto> efectos = convertirEfectos(datos.getEfectos());
 
-        String claseCarta = texto(datos.getCardClass());
+        String claseCarta = texto(datos.getClaseCarta());
 
         if (claseCarta.isEmpty()) {
-            claseCarta = texto(datos.getClazz());
+            claseCarta = texto(datos.getClase());
         }
 
         if (claseCarta.isEmpty()) {
@@ -438,11 +458,11 @@ public class Main {
             carta = crearUnidad(id, nombre, descripcion, datos, efectos);
         }
 
-        carta.setRarity(rareza);
-        carta.setType(tipo);
-        carta.setTarget(objetivo);
-        carta.setTiming(timing);
-        carta.setEffects(efectos);
+        carta.setRareza(rareza);
+        carta.setTipo(tipo);
+        carta.setObjetivo(objetivo);
+        carta.setMomento(momento);
+        carta.setEfectos(efectos);
 
         return carta;
     }
@@ -452,7 +472,7 @@ public class Main {
             String nombre,
             String descripcion,
             CartaJson datos,
-            ArrayList<Effect> efectos
+            ArrayList<Efecto> efectos
     ) {
         int ataque = obtenerAtaque(datos);
         int vida = obtenerVida(datos);
@@ -465,31 +485,31 @@ public class Main {
             int id,
             String nombre,
             String descripcion,
-            ArrayList<Effect> efectos
+            ArrayList<Efecto> efectos
     ) {
-        Effect efectoPrincipal;
+        Efecto efectoPrincipal;
 
         if (efectos.isEmpty()) {
-            efectoPrincipal = new Effect();
+            efectoPrincipal = new Efecto();
         } else {
             efectoPrincipal = efectos.get(0);
         }
 
-        String tipoEfecto = convertirTipoObjeto(efectoPrincipal.getType());
-        int valor = efectoPrincipal.getValue();
+        String tipoEfecto = convertirTipoObjeto(efectoPrincipal.getTipo());
+        int valor = efectoPrincipal.getValor();
 
         return new Objeto(id, nombre, descripcion, tipoEfecto, valor);
     }
 
-    private static Habilidad crearHabilidad(String nombreCarta, ArrayList<Effect> efectos) {
+    private static Habilidad crearHabilidad(String nombreCarta, ArrayList<Efecto> efectos) {
         if (efectos.isEmpty()) {
             return null;
         }
 
-        Effect efecto = efectos.get(0);
-        String tipo = normalizar(efecto.getType());
+        Efecto efecto = efectos.get(0);
+        String tipo = normalizar(efecto.getTipo());
 
-        String descripcion = efecto.getDescription();
+        String descripcion = efecto.getDescripcion();
 
         if (descripcion.isEmpty()) {
             descripcion = "Efecto de " + nombreCarta;
@@ -500,84 +520,78 @@ public class Main {
         switch (tipo) {
             case "damage":
             case "damage_percent_max_hp":
-                return new HabilidadDanio(nombreHabilidad, descripcion, efecto.getValue());
+                return new HabilidadDanio(nombreHabilidad, descripcion, efecto.getValor());
 
             case "heal":
             case "heal_percent_max_hp":
                 return new HabilidadCura(
                         nombreHabilidad,
                         descripcion,
-                        efecto.getValue(),
-                        esObjetivoAliado(efecto.getTarget())
+                        efecto.getValor(),
+                        esObjetivoAliado(efecto.getObjetivo())
                 );
 
             case "status":
             case "apply_status":
-                String estado = efecto.getTextValue();
+                String estado = efecto.getValorTexto();
 
                 if (estado.isEmpty()) {
                     estado = nombreHabilidad;
                 }
 
-                return new HabilidadEstado(nombreHabilidad, descripcion, estado, Math.max(1, efecto.getValue()));
+                return new HabilidadEstado(nombreHabilidad, descripcion, estado, Math.max(1, efecto.getValor()));
 
             default:
                 return null;
         }
     }
 
-    private static ArrayList<Effect> convertirEfectos(ArrayList efectosJson) {
-        ArrayList<Effect> efectos = new ArrayList<>();
+    private static ArrayList<Efecto> convertirEfectos(ArrayList<EfectoJson> efectosJson) {
+        ArrayList<Efecto> efectos = new ArrayList<>();
 
         if (efectosJson == null) {
             return efectos;
         }
 
         for (int i = 0; i < efectosJson.size(); i++) {
-            Object objeto = efectosJson.get(i);
+            EfectoJson datos = efectosJson.get(i);
 
-            if (!(objeto instanceof EffectJson)) {
-                continue;
-            }
+            String tipo = texto(datos.getTipo());
+            String objetivo = texto(datos.getObjetivo());
+            String descripcion = texto(datos.getDescripcion());
+            int valor = datos.getValor() != null ? datos.getValor() : 0;
 
-            EffectJson datos = (EffectJson) objeto;
-
-            String tipo = texto(datos.getType());
-            String objetivo = texto(datos.getTarget());
-            String descripcion = texto(datos.getDescription());
-            int valor = datos.getValue() != null ? datos.getValue() : 0;
-
-            String valorTexto = texto(datos.getTextValue());
+            String valorTexto = texto(datos.getValorTexto());
 
             if (valorTexto.isEmpty()) {
-                valorTexto = texto(datos.getStatus());
+                valorTexto = texto(datos.getEstado());
             }
 
-            efectos.add(new Effect(tipo, objetivo, valor, valorTexto, descripcion));
+            efectos.add(new Efecto(tipo, objetivo, valor, valorTexto, descripcion));
         }
 
         return efectos;
     }
 
     private static int obtenerAtaque(CartaJson datos) {
-        if (datos.getStats() != null && datos.getStats().getAttack() != null) {
-            return datos.getStats().getAttack();
+        if (datos.getEstadisticas() != null && datos.getEstadisticas().getAtaque() != null) {
+            return datos.getEstadisticas().getAtaque();
         }
 
-        if (datos.getAttack() != null) {
-            return datos.getAttack();
+        if (datos.getAtaque() != null) {
+            return datos.getAtaque();
         }
 
         return 1;
     }
 
     private static int obtenerVida(CartaJson datos) {
-        if (datos.getStats() != null && datos.getStats().getHealth() != null) {
-            return datos.getStats().getHealth();
+        if (datos.getEstadisticas() != null && datos.getEstadisticas().getSalud() != null) {
+            return datos.getEstadisticas().getSalud();
         }
 
-        if (datos.getHealth() != null) {
-            return datos.getHealth();
+        if (datos.getSalud() != null) {
+            return datos.getSalud();
         }
 
         return 5;

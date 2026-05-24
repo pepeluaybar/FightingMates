@@ -54,6 +54,7 @@ public class Unidad extends Carta {
     public void atacar(Unidad objetivo) {
         if (objetivo != null && estaViva() && activa) {
             objetivo.recibirDanio(getAtaqueEfectivo());
+            activa = false;
         }
     }
 
@@ -82,6 +83,16 @@ public class Unidad extends Carta {
         if (habilidad != null) {
             habilidad.aplicar(this, objetivo, propietario, rival);
         }
+    }
+
+    public boolean usarHabilidadManual(Unidad objetivo, Jugador propietario, Jugador rival) {
+        if (!estaViva() || !activa || habilidad == null) {
+            return false;
+        }
+
+        habilidad.aplicar(this, objetivo, propietario, rival);
+        activa = false;
+        return true;
     }
 
     // ─── Getters y setters ────────────────────────────────────────────────────
