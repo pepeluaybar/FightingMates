@@ -11,7 +11,7 @@ package fightingmates;
 public class Jugador {
     public static final int VIDA_INICIAL  = 30;
     public static final int VIDA_MAXIMA   = 30; // techo de curación
-    public static final int MANO_MAXIMA   = 10;
+    public static final int MANO_MAXIMA   = 5;
     public static final int DESCARTE_MAX  = 45;
 
     private String nombre;

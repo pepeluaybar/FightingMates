@@ -6,7 +6,7 @@ package fightingmates;
  * No hay emparejamientos fijos: cualquier unidad puede atacar a cualquier enemiga.
  */
 public class Tablero {
-    public static final int TAMANIO_CAMPO = 5;
+    public static final int TAMANIO_CAMPO = 3;
 
     private Jugador jugador1;
     private Jugador jugador2;

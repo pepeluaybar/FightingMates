@@ -1,19 +1,15 @@
 package fightingmates;
 
-import com.google.gson.annotations.SerializedName;
-
 public class StatsJson {
-    @SerializedName(value = "ataque", alternate = {"attack"})
-    private Integer ataque;
-    @SerializedName(value = "salud", alternate = {"health"})
-    private Integer salud;
+    private Integer attack;
+    private Integer health;
 
     public StatsJson() {
     }
 
-    public Integer getAtaque() { return ataque; }
-    public void setAtaque(Integer ataque) { this.ataque = ataque; }
+    public Integer getAttack() { return attack; }
+    public void setAttack(Integer attack) { this.attack = attack; }
 
-    public Integer getSalud() { return salud; }
-    public void setSalud(Integer salud) { this.salud = salud; }
+    public Integer getHealth() { return health; }
+    public void setHealth(Integer health) { this.health = health; }
 }
