@@ -113,131 +113,160 @@ public class Main {
 
     private static void ejecutarPartida(Juego juego) {
         while (true) {
-            Jugador ganador = juego.comprobarGanador();
-
-            if (ganador != null) {
-                System.out.println();
-                System.out.println("Ha ganado " + ganador.getNombre() + "!");
+            if (!ejecutarFaseDespliegue(juego, juego.getJugador1(), juego.getJugador2())) {
                 return;
             }
 
-            Jugador actual = juego.getJugadorActual();
-            Jugador rival = juego.getJugadorRival(actual);
-            boolean turnoTerminado = false;
-            int unidadesJugadas = 0;
-            boolean objetoUsado = false;
-            boolean ataqueUsado = false;
-            boolean habilidadUsada = false;
+            if (!ejecutarFaseDespliegue(juego, juego.getJugador2(), juego.getJugador1())) {
+                return;
+            }
 
-            robarAlInicioDelTurno(actual);
+            limpiarMuertas(juego);
+            Jugador ganador = juego.comprobarGanador();
+            if (ganador != null) {
+                anunciarGanador(ganador);
+                return;
+            }
 
-            while (!turnoTerminado) {
-                System.out.println();
-                System.out.println("==================================");
-                System.out.println("Turno de: " + actual.getNombre());
-                System.out.println(actual.getNombre() + " vida: " + actual.getVida());
-                System.out.println(rival.getNombre() + " vida: " + rival.getVida());
-                System.out.println("==================================");
+            if (!ejecutarFaseAccion(juego, juego.getJugador1(), juego.getJugador2())) {
+                return;
+            }
 
-                mostrarTablero(juego);
-                mostrarMenuTurno(actual, unidadesJugadas, objetoUsado, ataqueUsado, habilidadUsada);
+            if (!ejecutarFaseAccion(juego, juego.getJugador2(), juego.getJugador1())) {
+                return;
+            }
 
-                int opcion = leerEntero("Elige acción: ");
-
-                switch (opcion) {
-                    case 1:
-                        mostrarMano(actual);
-                        break;
-
-                    case 2:
-                        if (!puedeJugarUnidad(actual, unidadesJugadas, objetoUsado)) {
-                            System.out.println("No puedes jugar más unidades este turno.");
-                        } else if (jugarUnidad(actual)) {
-                            unidadesJugadas++;
-                        }
-                        break;
-
-                    case 3:
-                        if (!puedeUsarObjeto(actual, unidadesJugadas, objetoUsado)) {
-                            System.out.println("No puedes usar más objetos este turno.");
-                        } else if (usarObjeto(actual, rival)) {
-                            objetoUsado = true;
-                            limpiarMuertas(juego);
-
-                            ganador = juego.comprobarGanador();
-                            if (ganador != null) {
-                                System.out.println();
-                                System.out.println("Ha ganado " + ganador.getNombre() + "!");
-                                return;
-                            }
-                        }
-                        break;
-
-                    case 4:
-                        if (ataqueUsado) {
-                            System.out.println("Ya has atacado este turno.");
-                        } else if (atacar(juego, actual, rival)) {
-                            ataqueUsado = true;
-                            limpiarMuertas(juego);
-
-                            ganador = juego.comprobarGanador();
-                            if (ganador != null) {
-                                System.out.println();
-                                System.out.println("Ha ganado " + ganador.getNombre() + "!");
-                                return;
-                            }
-
-                            juego.finalizarTurno();
-                            turnoTerminado = true;
-                        }
-                        break;
-
-                    case 5:
-                        if (habilidadUsada) {
-                            System.out.println("Ya has usado una habilidad este turno.");
-                        } else if (usarHabilidadDeCura(actual, rival)) {
-                            habilidadUsada = true;
-                        }
-                        break;
-
-                    case 6:
-                        juego.finalizarTurno();
-                        turnoTerminado = true;
-                        break;
-
-                    case 0:
-                        System.out.println(actual.getNombre() + " se rinde.");
-                        System.out.println("Gana " + rival.getNombre() + "!");
-                        return;
-
-                    default:
-                        System.out.println("Opción no válida.");
-                        break;
-                }
+            limpiarMuertas(juego);
+            ganador = juego.comprobarGanador();
+            if (ganador != null) {
+                anunciarGanador(ganador);
+                return;
             }
         }
     }
 
-    private static void mostrarMenuTurno(
-            Jugador jugador,
-            int unidadesJugadas,
-            boolean objetoUsado,
-            boolean ataqueUsado,
-            boolean habilidadUsada
-    ) {
+    private static boolean ejecutarFaseDespliegue(Juego juego, Jugador actual, Jugador rival) {
+        int unidadesJugadas = 0;
+        boolean objetoUsado = false;
+
+        robarAlInicioDelTurno(actual);
+
+        boolean terminar = false;
+        while (!terminar) {
+            mostrarEstado(juego, actual, rival, "FASE DE DESPLIEGUE");
+            mostrarMenuDespliegue(actual, unidadesJugadas, objetoUsado);
+
+            int opcion = leerEntero("Elige acción: ");
+            switch (opcion) {
+                case 1:
+                    mostrarMano(actual);
+                    break;
+                case 2:
+                    if (!puedeJugarUnidad(actual, unidadesJugadas, objetoUsado)) {
+                        System.out.println("No puedes jugar más unidades en esta fase.");
+                    } else if (jugarUnidad(actual)) {
+                        unidadesJugadas++;
+                    }
+                    break;
+                case 3:
+                    if (!puedeUsarObjeto(actual, unidadesJugadas, objetoUsado)) {
+                        System.out.println("No puedes usar más objetos en esta fase.");
+                    } else if (usarObjeto(actual, rival)) {
+                        objetoUsado = true;
+                        limpiarMuertas(juego);
+                        Jugador ganador = juego.comprobarGanador();
+                        if (ganador != null) {
+                            anunciarGanador(ganador);
+                            return false;
+                        }
+                    }
+                    break;
+                case 4:
+                    terminar = true;
+                    break;
+                case 0:
+                    System.out.println(actual.getNombre() + " se rinde.");
+                    System.out.println("Gana " + rival.getNombre() + "!");
+                    return false;
+                default:
+                    System.out.println("Opción no válida.");
+                    break;
+            }
+        }
+
+        actual.setPrimerTurno(false);
+        return true;
+    }
+
+    private static boolean ejecutarFaseAccion(Juego juego, Jugador actual, Jugador rival) {
+        boolean accionCompletada = false;
+
+        while (!accionCompletada) {
+            mostrarEstado(juego, actual, rival, "FASE DE ACCIÓN");
+            mostrarMenuAccion();
+
+            int opcion = leerEntero("Elige acción: ");
+            switch (opcion) {
+                case 1:
+                    if (atacar(juego, actual, rival)) {
+                        accionCompletada = true;
+                    }
+                    break;
+                case 2:
+                    if (usarHabilidadDeCura(actual, rival)) {
+                        accionCompletada = true;
+                    }
+                    break;
+                case 3:
+                    System.out.println(actual.getNombre() + " pasa su acción.");
+                    accionCompletada = true;
+                    break;
+                case 0:
+                    System.out.println(actual.getNombre() + " se rinde.");
+                    System.out.println("Gana " + rival.getNombre() + "!");
+                    return false;
+                default:
+                    System.out.println("Opción no válida.");
+                    break;
+            }
+        }
+
+        return true;
+    }
+
+    private static void mostrarEstado(Juego juego, Jugador actual, Jugador rival, String fase) {
+        System.out.println();
+        System.out.println("==================================");
+        System.out.println(fase + " - " + actual.getNombre());
+        System.out.println(actual.getNombre() + " vida: " + actual.getVida());
+        System.out.println(rival.getNombre() + " vida: " + rival.getVida());
+        System.out.println("==================================");
+        mostrarTablero(juego);
+    }
+
+    private static void mostrarMenuDespliegue(Jugador jugador, int unidadesJugadas, boolean objetoUsado) {
         System.out.println();
         System.out.println("1. Ver mano");
         System.out.println("2. Jugar unidad");
         System.out.println("3. Usar objeto");
-        System.out.println("4. Atacar y terminar turno");
-        System.out.println("5. Usar habilidad de cura");
-        System.out.println("6. Pasar turno");
+        System.out.println("4. Terminar despliegue");
         System.out.println("0. Rendirse");
         System.out.println("Acciones usadas: unidades " + unidadesJugadas + "/"
                 + maximoUnidadesPorTurno(jugador)
-                + ", objeto " + textoSiNo(objetoUsado)
-                + ", ataque " + textoSiNo(ataqueUsado)
-                + ", habilidad " + textoSiNo(habilidadUsada));
+                + ", objeto " + textoSiNo(objetoUsado));
+    }
+
+    private static void mostrarMenuAccion() {
+        System.out.println();
+        System.out.println("1. Atacar");
+        System.out.println("2. Usar habilidad de cura");
+        System.out.println("3. Pasar turno");
+        System.out.println("0. Rendirse");
+    }
+
+    private static void anunciarGanador(Jugador ganador) {
+        System.out.println();
+        System.out.println("Ha ganado " + ganador.getNombre() + "!");
     }
 
     private static void robarAlInicioDelTurno(Jugador jugador) {
@@ -366,15 +395,25 @@ public class Main {
         Objeto objeto = (Objeto) carta;
         Unidad objetivo = null;
 
-        if ("DANIO_JUGADOR".equalsIgnoreCase(objeto.getTipoEfecto())) {
-            objetivo = null;
-        } else if ("DANIO".equalsIgnoreCase(objeto.getTipoEfecto())) {
-            objetivo = elegirUnidadViva(rival, "Elige una unidad enemiga:");
-        } else {
-            objetivo = elegirUnidadViva(actual, "Elige una unidad aliada:");
+        String tipo = objeto.getTipoEfecto() != null ? objeto.getTipoEfecto().toUpperCase(Locale.ROOT) : "";
+
+        switch (tipo) {
+            case "DANIO_JUGADOR":
+                objetivo = null;
+                break;
+            case "DANIO":
+                objetivo = elegirUnidadViva(rival, "Elige una unidad enemiga:");
+                break;
+            case "CURA":
+            case "BONUS_ATAQUE":
+                objetivo = elegirUnidadViva(actual, "Elige una unidad aliada:");
+                break;
+            default:
+                System.out.println("Tipo de objeto no soportado: " + objeto.getTipoEfecto());
+                return false;
         }
 
-        if (objetivo == null && !"DANIO_JUGADOR".equalsIgnoreCase(objeto.getTipoEfecto())) {
+        if (objetivo == null && !"DANIO_JUGADOR".equals(tipo)) {
             System.out.println("Objetivo no válido para ese objeto.");
             return false;
         }
