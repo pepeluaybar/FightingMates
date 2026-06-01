@@ -4,6 +4,7 @@ package fightingmates;
  * Habilidad de curación. Puede configurarse para usarse solo en aliados.
  * Cuando soloAliados=true, NO puede aplicarse a unidades enemigas ni al jugador rival:
  * la validación de objetivo válido se hace en la fase de ataque del Main.
+ * El operador "?" sirve como sustituto de if-else. Es un operador ternario.
  */
 public class HabilidadCura extends Habilidad {
     private int cantidadCura;
@@ -45,7 +46,7 @@ public class HabilidadCura extends Habilidad {
     public int getCantidadCura() { return cantidadCura; }
     public void setCantidadCura(int cantidadCura) { this.cantidadCura = Math.max(0, cantidadCura); }
 
-    public boolean isSoloAliados() { return soloAliados; }
+    public boolean esSoloAliadosBoolean() { return soloAliados; }
     public void setSoloAliados(boolean soloAliados) { this.soloAliados = soloAliados; }
 
     @Override

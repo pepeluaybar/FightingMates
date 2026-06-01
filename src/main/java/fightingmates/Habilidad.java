@@ -14,9 +14,18 @@ public abstract class Habilidad {
     }
 
     // Constructor por parámetros
-    public Habilidad(String nombre, String descripcion) {
-        this.nombre = nombre != null ? nombre : "";
-        this.descripcion = descripcion != null ? descripcion : "";
+    public Habilidad(String nombre, String descripcion){
+        if(nombre != null){
+            this.nombre = nombre;
+        } else {
+            this.nombre = "";
+        }
+
+        if(descripcion != null){
+            this.descripcion = descripcion;
+        } else {
+            this.descripcion = "";
+        }
     }
 
     // Constructor de copia
@@ -39,7 +48,13 @@ public abstract class Habilidad {
     }
 
     public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre != null ? nombre : ""; }
+    public void setNombre(String nombre) {
+        if(nombre != null){
+            this.nombre = nombre;
+        } else {
+            this.nombre = "";
+        }
+    }
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion != null ? descripcion : ""; }

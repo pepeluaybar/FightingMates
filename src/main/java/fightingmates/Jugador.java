@@ -11,7 +11,7 @@ package fightingmates;
 public class Jugador {
     public static final int VIDA_INICIAL  = 30;
     public static final int VIDA_MAXIMA   = 30; // techo de curación
-    public static final int MANO_MAXIMA   = 10;
+    public static final int MANO_MAXIMA   = 5;
     public static final int DESCARTE_MAX  = 45;
 
     private String nombre;
@@ -22,6 +22,7 @@ public class Jugador {
     private Carta[] descarte;
     private int numCartasDescarte;
     private boolean primerTurno;
+    private boolean objetoUsadoEsteTurno;
 
     // Referencia al tablero y al rival: las asigna Juego tras construir ambos jugadores
     private Tablero tablero;
@@ -42,6 +43,7 @@ public class Jugador {
         this.descarte = new Carta[DESCARTE_MAX];
         this.numCartasDescarte = 0;
         this.primerTurno = true;
+        this.objetoUsadoEsteTurno = false;
     }
 
     // Constructor de copia (copia estado; tablero y rival se reasignan externamente)
@@ -52,6 +54,7 @@ public class Jugador {
         for (int i = 0; i < otro.numCartasDescarte; i++) this.descarte[i] = otro.descarte[i];
         this.numCartasDescarte = otro.numCartasDescarte;
         this.primerTurno = otro.primerTurno;
+        this.objetoUsadoEsteTurno = otro.objetoUsadoEsteTurno;
         // tablero y rival no se copian; deben reasignarse
     }
 
@@ -118,6 +121,7 @@ public class Jugador {
      * El objeto se descarta tras su uso.
      */
     public boolean usarObjeto(int indiceMano, Unidad objetivo) {
+        if (objetoUsadoEsteTurno) return false;
         Carta carta = obtenerCartaMano(indiceMano);
         if (!(carta instanceof Objeto)) return false;
         Objeto objeto = (Objeto) carta;
@@ -125,6 +129,7 @@ public class Jugador {
         objeto.usar(objetivo, this, rival);
         Carta usada = eliminarCartaDeMano(indiceMano);
         anadirAlDescarte(usada);
+        objetoUsadoEsteTurno = true;
         return true;
     }
 
@@ -160,8 +165,13 @@ public class Jugador {
     public Carta[] getDescarte() { return descarte; }
     public int getNumCartasDescarte() { return numCartasDescarte; }
 
-    public boolean isPrimerTurno() { return primerTurno; }
+    public boolean esPrimerTurno() { return primerTurno; }
     public void setPrimerTurno(boolean primerTurno) { this.primerTurno = primerTurno; }
+
+    public boolean haUsadoObjetoEsteTurno() { return objetoUsadoEsteTurno; }
+    public void setObjetoUsadoEsteTurno(boolean objetoUsadoEsteTurno) {
+        this.objetoUsadoEsteTurno = objetoUsadoEsteTurno;
+    }
 
     public Tablero getTablero() { return tablero; }
     public void setTablero(Tablero tablero) { this.tablero = tablero; }

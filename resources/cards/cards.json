@@ -1,13 +1,191 @@
 [
   {
-    "name": "Defecto",
+    "name": "Pepelu Delegado",
+    "rarity": "oca",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Pepelu organiza la partida y presiona al rival con autoridad.",
+    "copies": 1,
+    "stats": {
+      "attack": 3,
+      "health": 7
+    },
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "value": 2,
+        "status": "depresion",
+        "description": "Discurso de delegado: aplica depresion durante 2 turnos."
+      }
+    ]
+  },
+  {
+    "name": "Pepelu Perro",
+    "rarity": "perro",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "ally",
+    "timing": "action",
+    "description": "Pepelu aguanta la presión y ayuda a recuperar vida.",
+    "copies": 1,
+    "stats": {
+      "attack": 2,
+      "health": 6
+    },
+    "effects": [
+      {
+        "type": "heal",
+        "target": "ally",
+        "value": 3,
+        "description": "Descanso rápido: cura 3 puntos de vida a una unidad aliada."
+      }
+    ]
+  },
+  {
+    "name": "Dani Dieta",
     "rarity": "perro",
     "type": "Personaje",
     "cardClass": "unit",
     "target": "enemy",
     "timing": "action",
-    "description": "Unidad de combate básica. Inflige daño extra al atacar.",
-    "copies": 8,
+    "description": "Dani entra serio y pega menos, pero aguanta bastante.",
+    "copies": 1,
+    "stats": {
+      "attack": 2,
+      "health": 8
+    },
+    "effects": [
+      {
+        "type": "damage",
+        "target": "enemy",
+        "value": 1,
+        "description": "Constancia: inflige 1 punto de daño adicional al atacar."
+      }
+    ]
+  },
+  {
+    "name": "Dani Dopaminico",
+    "rarity": "oca",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Dani se viene arriba y ataca con mucha energía.",
+    "copies": 1,
+    "stats": {
+      "attack": 4,
+      "health": 5
+    },
+    "effects": [
+      {
+        "type": "damage",
+        "target": "enemy",
+        "value": 2,
+        "description": "Subidón: inflige 2 puntos de daño adicional al atacar."
+      }
+    ]
+  },
+  {
+    "name": "Nach Scratch",
+    "rarity": "perro",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Nacho tira de rima rápida para descolocar al rival.",
+    "copies": 1,
+    "stats": {
+      "attack": 3,
+      "health": 5
+    },
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "value": 1,
+        "status": "confusion",
+        "description": "Cuack mental: aplica confusion durante 1 turno."
+      }
+    ]
+  },
+  {
+    "name": "Nacho Presidente",
+    "rarity": "oca",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "ally",
+    "timing": "action",
+    "description": "Nacho levanta al equipo con discurso presidencial.",
+    "copies": 1,
+    "stats": {
+      "attack": 2,
+      "health": 7
+    },
+    "effects": [
+      {
+        "type": "heal",
+        "target": "ally",
+        "value": 4,
+        "description": "Mando de clase: cura 4 puntos de vida a una unidad aliada."
+      }
+    ]
+  },
+  {
+    "name": "Andres Peruano",
+    "rarity": "perro",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "ally",
+    "timing": "action",
+    "description": "Andres se recompone y mantiene al equipo en pie.",
+    "copies": 1,
+    "stats": {
+      "attack": 2,
+      "health": 7
+    },
+    "effects": [
+      {
+        "type": "heal",
+        "target": "ally",
+        "value": 2,
+        "description": "Siestecita: cura 2 puntos de vida a una unidad aliada."
+      }
+    ]
+  },
+  {
+    "name": "Andres Snorlax",
+    "rarity": "oca",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Andres aguanta muchísimo y golpea cuando le dejan sitio.",
+    "copies": 1,
+    "stats": {
+      "attack": 3,
+      "health": 9
+    },
+    "effects": [
+      {
+        "type": "damage",
+        "target": "enemy",
+        "value": 1,
+        "description": "Despertar pesado: inflige 1 punto de daño adicional al atacar."
+      }
+    ]
+  },
+  {
+    "name": "Manu Patodilla",
+    "rarity": "perro",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Manu entra con silbido y molesta al rival.",
+    "copies": 1,
     "stats": {
       "attack": 3,
       "health": 6
@@ -17,47 +195,167 @@
         "type": "damage",
         "target": "enemy",
         "value": 1,
-        "description": "Arañazo: inflige 1 daño adicional al atacar."
+        "description": "Silbido: inflige 1 punto de daño adicional al atacar."
       }
     ]
   },
   {
-    "name": "Curador",
+    "name": "Manu y con y de to",
+    "rarity": "oca",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Manu viene completo y pega fuerte.",
+    "copies": 1,
+    "stats": {
+      "attack": 4,
+      "health": 6
+    },
+    "effects": [
+      {
+        "type": "damage",
+        "target": "enemy",
+        "value": 2,
+        "description": "Y de to: inflige 2 puntos de daño adicional al atacar."
+      }
+    ]
+  },
+  {
+    "name": "Pablo Ludopata",
     "rarity": "perro",
     "type": "Personaje",
     "cardClass": "unit",
-    "target": "ally",
+    "target": "enemy",
     "timing": "action",
-    "description": "Unidad de soporte. Puede curar 3 HP a una unidad aliada.",
-    "copies": 5,
+    "description": "Pablo arriesga la jugada y busca daño rápido.",
+    "copies": 1,
     "stats": {
-      "attack": 1,
+      "attack": 4,
+      "health": 4
+    },
+    "effects": [
+      {
+        "type": "damage",
+        "target": "enemy",
+        "value": 1,
+        "description": "Apuesta rápida: inflige 1 punto de daño adicional al atacar."
+      }
+    ]
+  },
+  {
+    "name": "Pablo Canita",
+    "rarity": "oca",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Pablo saca una cañita antigua y hace daño serio.",
+    "copies": 1,
+    "stats": {
+      "attack": 5,
       "health": 5
     },
     "effects": [
       {
-        "type": "heal",
-        "target": "ally",
-        "value": 3,
-        "description": "Vendas: restaura 3 HP a una unidad aliada."
+        "type": "damage",
+        "target": "enemy",
+        "value": 2,
+        "description": "Cañita dura: inflige 2 puntos de daño adicional al atacar."
       }
     ]
   },
   {
-    "name": "Amuleto de Fuerza",
+    "name": "Melero Friki",
+    "rarity": "oca",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Melero analiza la partida y castiga el fallo rival.",
+    "copies": 1,
+    "stats": {
+      "attack": 3,
+      "health": 7
+    },
+    "effects": [
+      {
+        "type": "damage",
+        "target": "enemy",
+        "value": 2,
+        "description": "Análisis técnico: inflige 2 puntos de daño adicional al atacar."
+      }
+    ]
+  },
+  {
+    "name": "Cafe de Christian",
     "rarity": "perro",
     "type": "Objeto",
     "cardClass": "object",
     "target": "ally",
     "timing": "action",
-    "description": "Multiplica el daño de una unidad aliada por 1.5 de forma permanente.",
-    "copies": 4,
+    "description": "Un café rápido para recuperar a una unidad aliada.",
+    "copies": 1,
+    "effects": [
+      {
+        "type": "heal",
+        "target": "ally",
+        "value": 4,
+        "description": "Cura 4 puntos de vida a una unidad aliada."
+      }
+    ]
+  },
+  {
+    "name": "Silbido de Manu",
+    "rarity": "perro",
+    "type": "Objeto",
+    "cardClass": "object",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Un silbido que desconcentra y hace daño a una unidad enemiga.",
+    "copies": 1,
+    "effects": [
+      {
+        "type": "damage",
+        "target": "enemy",
+        "value": 3,
+        "description": "Inflige 3 puntos de daño a una unidad enemiga."
+      }
+    ]
+  },
+  {
+    "name": "Amuleto de Programacion",
+    "rarity": "oca",
+    "type": "Objeto",
+    "cardClass": "object",
+    "target": "ally",
+    "timing": "action",
+    "description": "Mejora el ataque de una unidad aliada durante la partida.",
+    "copies": 1,
     "effects": [
       {
         "type": "bonus_attack",
         "target": "ally",
         "value": 0,
         "description": "Aplica x1.5 al ataque de una unidad aliada."
+      }
+    ]
+  },
+  {
+    "name": "Canita de Pablo",
+    "rarity": "oca",
+    "type": "Objeto",
+    "cardClass": "object",
+    "target": "enemy_player",
+    "timing": "action",
+    "description": "Daño directo al jugador rival.",
+    "copies": 1,
+    "effects": [
+      {
+        "type": "player_damage",
+        "target": "enemy_player",
+        "value": 4,
+        "description": "Inflige 4 puntos de daño directamente al jugador rival."
       }
     ]
   }

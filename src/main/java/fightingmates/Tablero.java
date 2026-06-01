@@ -6,7 +6,7 @@ package fightingmates;
  * No hay emparejamientos fijos: cualquier unidad puede atacar a cualquier enemiga.
  */
 public class Tablero {
-    public static final int TAMANIO_CAMPO = 5;
+    public static final int TAMANIO_CAMPO = 3;
 
     private Jugador jugador1;
     private Jugador jugador2;
@@ -66,9 +66,9 @@ public class Tablero {
     public Unidad[] obtenerUnidadesVivas(Jugador jugador) {
         Unidad[] campo = obtenerCampoPorJugador(jugador);
         if (campo == null) return new Unidad[0];
-        int count = 0;
-        for (Unidad u : campo) if (u != null && u.estaViva()) count++;
-        Unidad[] vivas = new Unidad[count];
+        int cuenta = 0;
+        for (Unidad u : campo) if (u != null && u.estaViva()) cuenta++;
+        Unidad[] vivas = new Unidad[cuenta];
         int idx = 0;
         for (Unidad u : campo) if (u != null && u.estaViva()) vivas[idx++] = u;
         return vivas;
@@ -95,6 +95,7 @@ public class Tablero {
     public boolean esPosicionValida(int posicion) {
         return posicion >= 0 && posicion < campoJ1.length;
     }
+
 
     // ─── Internos ─────────────────────────────────────────────────────────────
 
