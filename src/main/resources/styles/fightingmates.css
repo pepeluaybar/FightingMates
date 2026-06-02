@@ -1,0 +1,170 @@
+.root {
+    -fx-font-family: "Inter", "Segoe UI", "Arial", sans-serif;
+    -fx-base: #151a26;
+    -fx-background: #0d111a;
+}
+
+.app-root {
+    -fx-background-color: linear-gradient(to bottom right, #111827, #0f172a 55%, #172554);
+}
+
+.header,
+.action-bar,
+.side-panel,
+.board-section {
+    -fx-background-color: rgba(15, 23, 42, 0.90);
+    -fx-border-color: rgba(148, 163, 184, 0.22);
+    -fx-border-radius: 18;
+    -fx-background-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.30), 18, 0.24, 0, 8);
+}
+
+.header {
+    -fx-padding: 22 28;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-radius: 0 0 22 22;
+    -fx-border-radius: 0 0 22 22;
+}
+
+.app-title {
+    -fx-text-fill: #f8fafc;
+    -fx-font-size: 34px;
+    -fx-font-weight: 800;
+    -fx-letter-spacing: 1.4px;
+}
+
+.status-label,
+.player-summary,
+.field-label {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 14px;
+}
+
+.board-area {
+    -fx-padding: 22;
+}
+
+.board-section {
+    -fx-padding: 18;
+}
+
+.section-title {
+    -fx-text-fill: #facc15;
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
+}
+
+.side-panel {
+    -fx-padding: 18;
+    -fx-pref-width: 360;
+    -fx-background-radius: 22 0 0 22;
+    -fx-border-radius: 22 0 0 22;
+}
+
+.action-bar {
+    -fx-padding: 16 22;
+    -fx-background-radius: 22 22 0 0;
+    -fx-border-radius: 22 22 0 0;
+}
+
+.unit-card {
+    -fx-padding: 14;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+}
+
+.unit-empty {
+    -fx-background-color: rgba(30, 41, 59, 0.56);
+    -fx-border-color: rgba(148, 163, 184, 0.24);
+}
+
+.unit-occupied {
+    -fx-background-color: linear-gradient(to bottom, #1e293b, #111827);
+    -fx-border-color: rgba(250, 204, 21, 0.52);
+}
+
+.rival-unit.unit-occupied {
+    -fx-border-color: rgba(248, 113, 113, 0.58);
+}
+
+.unit-position {
+    -fx-text-fill: #93c5fd;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.unit-name {
+    -fx-text-fill: #f8fafc;
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+}
+
+.unit-stats {
+    -fx-text-fill: #fde68a;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+}
+
+.unit-status,
+.card-description,
+.card-meta {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 12px;
+}
+
+.list-view,
+.combo-box-base {
+    -fx-background-color: #111827;
+    -fx-border-color: rgba(148, 163, 184, 0.20);
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 8;
+}
+
+.list-cell:filled:selected,
+.list-cell:filled:selected:hover {
+    -fx-background-color: rgba(37, 99, 235, 0.42);
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: rgba(30, 41, 59, 0.82);
+}
+
+.card-name {
+    -fx-text-fill: #f8fafc;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+.primary-action,
+.secondary-action {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-cursor: hand;
+    -fx-font-weight: 800;
+    -fx-padding: 10 14;
+}
+
+.primary-action {
+    -fx-text-fill: #0f172a;
+    -fx-background-color: linear-gradient(to bottom, #facc15, #f59e0b);
+}
+
+.primary-action:hover {
+    -fx-background-color: linear-gradient(to bottom, #fde047, #fbbf24);
+}
+
+.secondary-action {
+    -fx-text-fill: #e0f2fe;
+    -fx-background-color: rgba(14, 165, 233, 0.25);
+    -fx-border-color: rgba(125, 211, 252, 0.45);
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #e2e8f0;
+}
