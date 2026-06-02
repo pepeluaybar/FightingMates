@@ -16,7 +16,7 @@ public abstract class Carta {
     private String tipo;
     private String objetivo;
     private String momento; // Timing
-    private List<Efecto> efectos;
+    private List<Effect> efectos;
 
     // Constructor por defecto
     public Carta() {
@@ -71,12 +71,12 @@ public abstract class Carta {
     public String getMomento() { return momento; }
     public void setMomento(String momento) { this.momento = momento != null ? momento : ""; }
 
-    public List<Efecto> getEfectos() { return Collections.unmodifiableList(efectos); }
-    public void setEfectos(List<Efecto> efectos) {
+    public List<Effect> getEfectos() { return Collections.unmodifiableList(efectos); }
+    public void setEfectos(List<Effect> efectos) {
         this.efectos = new ArrayList<>();
         if (efectos == null) return;
-        for (Efecto efecto : efectos) {
-            if (efecto != null) this.efectos.add(new Efecto(efecto));
+        for (Effect efecto : efectos) {
+            if (efecto != null) this.efectos.add(new Effect(efecto));
         }
     }
 

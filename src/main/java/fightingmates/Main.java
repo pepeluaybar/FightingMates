@@ -5,6 +5,7 @@ import com.google.gson.JsonSyntaxException;
 
 import java.io.File;
 import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
@@ -16,10 +17,16 @@ public class Main {
 
     public static void main(String[] args) {
         String rutaCartas = obtenerRutaCartas(args);
+        boolean listarCartasYSalir = existeArgumento(args, "--list-cards");
         ArrayList<Carta> cartas = cargarCartasDesdeJson(rutaCartas);
 
         if (cartas.isEmpty()) {
             System.out.println("No se han podido cargar cartas. El juego no puede empezar.");
+            return;
+        }
+
+        if (listarCartasYSalir) {
+            listarCartas(cartas);
             return;
         }
 
@@ -105,87 +112,211 @@ public class Main {
     }
 
     private static void ejecutarPartida(Juego juego) {
-        boolean partidaTerminada = false;
-
-        while (!partidaTerminada) {
-            Jugador ganador = juego.comprobarGanador();
-
-            if (ganador != null) {
-                System.out.println();
-                System.out.println("Ha ganado " + ganador.getNombre() + "!");
+        while (true) {
+            if (!ejecutarFaseDespliegue(juego, juego.getJugador1(), juego.getJugador2())) {
                 return;
             }
 
-            Jugador actual = juego.getJugadorActual();
-            Jugador rival = juego.getJugadorRival(actual);
+            if (!ejecutarFaseDespliegue(juego, juego.getJugador2(), juego.getJugador1())) {
+                return;
+            }
 
-            System.out.println();
-            System.out.println("==================================");
-            System.out.println("Turno de: " + actual.getNombre());
-            System.out.println(actual.getNombre() + " vida: " + actual.getVida());
-            System.out.println(rival.getNombre() + " vida: " + rival.getVida());
-            System.out.println("==================================");
+            limpiarMuertas(juego);
+            Jugador ganador = juego.comprobarGanador();
+            if (ganador != null) {
+                anunciarGanador(ganador);
+                return;
+            }
 
-            mostrarTablero(juego);
-            mostrarMenuTurno();
+            if (!ejecutarFaseAccion(juego, juego.getJugador1(), juego.getJugador2())) {
+                return;
+            }
+
+            if (!ejecutarFaseAccion(juego, juego.getJugador2(), juego.getJugador1())) {
+                return;
+            }
+
+            limpiarMuertas(juego);
+            ganador = juego.comprobarGanador();
+            if (ganador != null) {
+                anunciarGanador(ganador);
+                return;
+            }
+        }
+    }
+
+    private static boolean ejecutarFaseDespliegue(Juego juego, Jugador actual, Jugador rival) {
+        int unidadesJugadas = 0;
+        boolean objetoUsado = false;
+
+        robarAlInicioDelTurno(actual);
+
+        boolean terminar = false;
+        while (!terminar) {
+            mostrarEstado(juego, actual, rival, "FASE DE DESPLIEGUE");
+            mostrarMenuDespliegue(actual, unidadesJugadas, objetoUsado);
 
             int opcion = leerEntero("Elige acción: ");
-
             switch (opcion) {
                 case 1:
                     mostrarMano(actual);
                     break;
-
                 case 2:
-                    jugarUnidad(actual);
+                    if (!puedeJugarUnidad(actual, unidadesJugadas, objetoUsado)) {
+                        System.out.println("No puedes jugar más unidades en esta fase.");
+                    } else if (jugarUnidad(actual)) {
+                        unidadesJugadas++;
+                    }
                     break;
-
                 case 3:
-                    usarObjeto(actual, rival);
-                    limpiarMuertas(juego);
+                    if (!puedeUsarObjeto(actual, unidadesJugadas, objetoUsado)) {
+                        System.out.println("No puedes usar más objetos en esta fase.");
+                    } else if (usarObjeto(actual, rival)) {
+                        objetoUsado = true;
+                        limpiarMuertas(juego);
+                        Jugador ganador = juego.comprobarGanador();
+                        if (ganador != null) {
+                            anunciarGanador(ganador);
+                            return false;
+                        }
+                    }
                     break;
-
                 case 4:
-                    atacar(juego, actual, rival);
-                    limpiarMuertas(juego);
+                    terminar = true;
                     break;
-
-                case 5:
-                    usarHabilidadDeCura(actual, rival);
-                    break;
-
-                case 6:
-                    actual.robarCarta();
-                    System.out.println(actual.getNombre() + " roba una carta.");
-                    break;
-
-                case 7:
-                    juego.finalizarTurno();
-                    break;
-
                 case 0:
                     System.out.println(actual.getNombre() + " se rinde.");
                     System.out.println("Gana " + rival.getNombre() + "!");
-                    partidaTerminada = true;
-                    break;
-
+                    return false;
                 default:
                     System.out.println("Opción no válida.");
                     break;
             }
         }
+
+        actual.setPrimerTurno(false);
+        return true;
     }
 
-    private static void mostrarMenuTurno() {
+    private static boolean ejecutarFaseAccion(Juego juego, Jugador actual, Jugador rival) {
+        boolean accionCompletada = false;
+
+        while (!accionCompletada) {
+            mostrarEstado(juego, actual, rival, "FASE DE ACCIÓN");
+            mostrarMenuAccion();
+
+            int opcion = leerEntero("Elige acción: ");
+            switch (opcion) {
+                case 1:
+                    if (atacar(juego, actual, rival)) {
+                        accionCompletada = true;
+                    }
+                    break;
+                case 2:
+                    if (usarHabilidadDeCura(actual, rival)) {
+                        accionCompletada = true;
+                    }
+                    break;
+                case 3:
+                    System.out.println(actual.getNombre() + " pasa su acción.");
+                    accionCompletada = true;
+                    break;
+                case 0:
+                    System.out.println(actual.getNombre() + " se rinde.");
+                    System.out.println("Gana " + rival.getNombre() + "!");
+                    return false;
+                default:
+                    System.out.println("Opción no válida.");
+                    break;
+            }
+        }
+
+        return true;
+    }
+
+    private static void mostrarEstado(Juego juego, Jugador actual, Jugador rival, String fase) {
+        System.out.println();
+        System.out.println("==================================");
+        System.out.println(fase + " - " + actual.getNombre());
+        System.out.println(actual.getNombre() + " vida: " + actual.getVida());
+        System.out.println(rival.getNombre() + " vida: " + rival.getVida());
+        System.out.println("==================================");
+        mostrarTablero(juego);
+    }
+
+    private static void mostrarMenuDespliegue(Jugador jugador, int unidadesJugadas, boolean objetoUsado) {
         System.out.println();
         System.out.println("1. Ver mano");
         System.out.println("2. Jugar unidad");
         System.out.println("3. Usar objeto");
-        System.out.println("4. Atacar");
-        System.out.println("5. Usar habilidad de cura");
-        System.out.println("6. Robar carta");
-        System.out.println("7. Pasar turno");
+        System.out.println("4. Terminar despliegue");
         System.out.println("0. Rendirse");
+        System.out.println("Acciones usadas: unidades " + unidadesJugadas + "/"
+                + maximoUnidadesPorTurno(jugador)
+                + ", objeto " + textoSiNo(objetoUsado));
+    }
+
+    private static void mostrarMenuAccion() {
+        System.out.println();
+        System.out.println("1. Atacar");
+        System.out.println("2. Usar habilidad de cura");
+        System.out.println("3. Pasar turno");
+        System.out.println("0. Rendirse");
+    }
+
+    private static void anunciarGanador(Jugador ganador) {
+        System.out.println();
+        System.out.println("Ha ganado " + ganador.getNombre() + "!");
+    }
+
+    private static void robarAlInicioDelTurno(Jugador jugador) {
+        System.out.println();
+        System.out.println("Inicio del turno de " + jugador.getNombre() + ".");
+
+        if (jugador.getNumCartasMano() >= Jugador.MANO_MAXIMA) {
+            System.out.println("La mano está llena (" + Jugador.MANO_MAXIMA + " cartas). No roba carta.");
+            return;
+        }
+
+        Carta cartaRobada = jugador.robarCarta();
+
+        if (cartaRobada == null) {
+            System.out.println("No roba carta porque el mazo está vacío.");
+        } else {
+            System.out.println(jugador.getNombre() + " roba: " + cartaRobada.getNombre());
+        }
+    }
+
+    private static int maximoUnidadesPorTurno(Jugador jugador) {
+        if (jugador.esPrimerTurno()) {
+            return 2;
+        }
+
+        return 1;
+    }
+
+    private static boolean puedeJugarUnidad(Jugador jugador, int unidadesJugadas, boolean objetoUsado) {
+        if (jugador.esPrimerTurno()) {
+            return unidadesJugadas < 2;
+        }
+
+        return unidadesJugadas == 0 && !objetoUsado;
+    }
+
+    private static boolean puedeUsarObjeto(Jugador jugador, int unidadesJugadas, boolean objetoUsado) {
+        if (jugador.esPrimerTurno()) {
+            return !objetoUsado;
+        }
+
+        return unidadesJugadas == 0 && !objetoUsado;
+    }
+
+    private static String textoSiNo(boolean valor) {
+        if (valor) {
+            return "sí";
+        }
+
+        return "no";
     }
 
     // =========================================================
@@ -206,11 +337,33 @@ public class Main {
         }
     }
 
-    private static void jugarUnidad(Jugador jugador) {
+    private static boolean jugarUnidad(Jugador jugador) {
         mostrarMano(jugador);
 
         int indiceCarta = leerEntero("Índice de la carta unidad: ");
-        int posicion = leerEntero("Posición del tablero entre 0 y 4: ");
+        Carta carta = jugador.obtenerCartaMano(indiceCarta);
+
+        if (carta == null) {
+            System.out.println("Índice de carta no válido.");
+            return false;
+        }
+
+        if (!(carta instanceof Unidad)) {
+            System.out.println("Esa carta no es una unidad.");
+            return false;
+        }
+
+        int posicion = leerEntero("Posición del tablero entre 0 y " + (Tablero.TAMANIO_CAMPO - 1) + ": ");
+
+        if (!jugador.getTablero().esPosicionValida(posicion)) {
+            System.out.println("Posición no válida.");
+            return false;
+        }
+
+        if (jugador.getTablero().obtenerUnidad(jugador, posicion) != null) {
+            System.out.println("Esa posición ya está ocupada.");
+            return false;
+        }
 
         boolean colocada = jugador.jugarUnidad(indiceCarta, posicion);
 
@@ -219,33 +372,50 @@ public class Main {
         } else {
             System.out.println("No se pudo colocar la unidad.");
         }
+
+        return colocada;
     }
 
-    private static void usarObjeto(Jugador actual, Jugador rival) {
-        if (actual.haUsadoObjetoEsteTurno()) {
-            System.out.println("Ya has usado un objeto este turno.");
-            return;
-        }
-
+    private static boolean usarObjeto(Jugador actual, Jugador rival) {
         mostrarMano(actual);
 
         int indiceCarta = leerEntero("Índice del objeto: ");
         Carta carta = actual.obtenerCartaMano(indiceCarta);
 
+        if (carta == null) {
+            System.out.println("Índice de carta no válido.");
+            return false;
+        }
+
         if (!(carta instanceof Objeto)) {
             System.out.println("Esa carta no es un objeto.");
-            return;
+            return false;
         }
 
         Objeto objeto = (Objeto) carta;
         Unidad objetivo = null;
 
-        if ("DANIO_JUGADOR".equalsIgnoreCase(objeto.getTipoEfecto())) {
-            objetivo = null;
-        } else if ("DANIO".equalsIgnoreCase(objeto.getTipoEfecto())) {
-            objetivo = elegirUnidadViva(rival, "Elige una unidad enemiga:");
-        } else {
-            objetivo = elegirUnidadViva(actual, "Elige una unidad aliada:");
+        String tipo = objeto.getTipoEfecto() != null ? objeto.getTipoEfecto().toUpperCase(Locale.ROOT) : "";
+
+        switch (tipo) {
+            case "DANIO_JUGADOR":
+                objetivo = null;
+                break;
+            case "DANIO":
+                objetivo = elegirUnidadViva(rival, "Elige una unidad enemiga:");
+                break;
+            case "CURA":
+            case "BONUS_ATAQUE":
+                objetivo = elegirUnidadViva(actual, "Elige una unidad aliada:");
+                break;
+            default:
+                System.out.println("Tipo de objeto no soportado: " + objeto.getTipoEfecto());
+                return false;
+        }
+
+        if (objetivo == null && !"DANIO_JUGADOR".equals(tipo)) {
+            System.out.println("Objetivo no válido para ese objeto.");
+            return false;
         }
 
         boolean usado = actual.usarObjeto(indiceCarta, objetivo);
@@ -255,19 +425,21 @@ public class Main {
         } else {
             System.out.println("No se pudo usar el objeto.");
         }
+
+        return usado;
     }
 
-    private static void atacar(Juego juego, Jugador actual, Jugador rival) {
+    private static boolean atacar(Juego juego, Jugador actual, Jugador rival) {
         Unidad atacante = elegirUnidadViva(actual, "Elige tu unidad atacante:");
 
         if (atacante == null) {
             System.out.println("No tienes unidades para atacar.");
-            return;
+            return false;
         }
 
         if (!atacante.esActiva()) {
             System.out.println("Esa unidad ya ha actuado este turno.");
-            return;
+            return false;
         }
 
         if (juego.getTablero().hayUnidadesVivas(rival)) {
@@ -275,7 +447,7 @@ public class Main {
 
             if (objetivo == null) {
                 System.out.println("No hay objetivo válido.");
-                return;
+                return false;
             }
 
             juego.ejecutarAtaque(atacante, objetivo);
@@ -284,31 +456,33 @@ public class Main {
             juego.atacarJugador(atacante, rival);
             System.out.println(atacante.getNombre() + " atacó directamente a " + rival.getNombre() + ".");
         }
+
+        return true;
     }
 
-    private static void usarHabilidadDeCura(Jugador actual, Jugador rival) {
+    private static boolean usarHabilidadDeCura(Jugador actual, Jugador rival) {
         Unidad origen = elegirUnidadViva(actual, "Elige la unidad que tiene habilidad de cura:");
 
         if (origen == null) {
             System.out.println("No hay unidad válida.");
-            return;
+            return false;
         }
 
         if (!origen.esActiva()) {
             System.out.println("Esa unidad ya ha actuado este turno.");
-            return;
+            return false;
         }
 
         if (origen.getHabilidad() == null || !origen.getHabilidad().esSoloAliados()) {
             System.out.println("Esa unidad no tiene una habilidad de cura para aliados.");
-            return;
+            return false;
         }
 
         Unidad objetivo = elegirUnidadViva(actual, "Elige la unidad aliada a curar:");
 
         if (objetivo == null) {
             System.out.println("No hay objetivo válido.");
-            return;
+            return false;
         }
 
         boolean habilidadUsada = origen.usarHabilidadManual(objetivo, actual, rival);
@@ -318,6 +492,8 @@ public class Main {
         } else {
             System.out.println("No se pudo usar la habilidad.");
         }
+
+        return habilidadUsada;
     }
 
     // =========================================================
@@ -364,13 +540,27 @@ public class Main {
     private static String obtenerRutaCartas(String[] args) {
         String ruta = DEFAULT_CARDS_PATH;
 
-        for (int i = 0; i < args.length - 1; i++) {
+        for (int i = 0; i < args.length; i++) {
             if ("--cards".equals(args[i])) {
-                ruta = args[i + 1];
+                if (i + 1 < args.length && !args[i + 1].startsWith("--")) {
+                    ruta = args[i + 1];
+                } else {
+                    System.out.println("No se indicó ruta después de --cards. Se usará el archivo por defecto.");
+                }
             }
         }
 
         return ruta;
+    }
+
+    private static boolean existeArgumento(String[] args, String argumentoBuscado) {
+        for (int i = 0; i < args.length; i++) {
+            if (argumentoBuscado.equals(args[i])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static ArrayList<Carta> cargarCartasDesdeJson(String ruta) {
@@ -383,7 +573,7 @@ public class Main {
             return cartas;
         }
 
-        try (FileReader reader = new FileReader(archivo)) {
+        try (FileReader reader = new FileReader(archivo, StandardCharsets.UTF_8)) {
             CartaJson[] datosCartas = new Gson().fromJson(reader, CartaJson[].class);
 
             if (datosCartas == null) {
@@ -401,7 +591,7 @@ public class Main {
                     continue;
                 }
 
-                int copias = datos.getCopias() != null ? Math.max(1, datos.getCopias()) : 1;
+                int copias = datos.getCopies() != null ? Math.max(1, datos.getCopies()) : 1;
 
                 for (int c = 0; c < copias; c++) {
                     Carta carta = crearCartaDesdeJson(datos, id);
@@ -425,25 +615,25 @@ public class Main {
     }
 
     private static Carta crearCartaDesdeJson(CartaJson datos, int id) {
-        String nombre = texto(datos.getNombre());
-        String rareza = texto(datos.getRareza());
-        String tipo = texto(datos.getTipo());
-        String objetivo = texto(datos.getObjetivo());
-        String momento = texto(datos.getMomento());
-        String descripcion = texto(datos.getDescripcion());
+        String nombre = texto(datos.getName());
+        String rareza = texto(datos.getRarity());
+        String tipo = texto(datos.getType());
+        String objetivo = texto(datos.getTarget());
+        String timing = texto(datos.getTiming());
+        String descripcion = texto(datos.getDescription());
 
         if (nombre.isEmpty() || rareza.isEmpty() || tipo.isEmpty() || objetivo.isEmpty()
-                || momento.isEmpty() || descripcion.isEmpty()) {
+                || timing.isEmpty() || descripcion.isEmpty()) {
             System.out.println("Carta ignorada por tener campos obligatorios vacíos.");
             return null;
         }
 
-        ArrayList<Efecto> efectos = convertirEfectos(datos.getEfectos());
+        ArrayList<Effect> efectos = convertirEfectos(datos.getEffects());
 
-        String claseCarta = texto(datos.getClaseCarta());
+        String claseCarta = texto(datos.getCardClass());
 
         if (claseCarta.isEmpty()) {
-            claseCarta = texto(datos.getClase());
+            claseCarta = texto(datos.getClazz());
         }
 
         if (claseCarta.isEmpty()) {
@@ -461,7 +651,7 @@ public class Main {
         carta.setRareza(rareza);
         carta.setTipo(tipo);
         carta.setObjetivo(objetivo);
-        carta.setMomento(momento);
+        carta.setMomento(timing);
         carta.setEfectos(efectos);
 
         return carta;
@@ -472,7 +662,7 @@ public class Main {
             String nombre,
             String descripcion,
             CartaJson datos,
-            ArrayList<Efecto> efectos
+            ArrayList<Effect> efectos
     ) {
         int ataque = obtenerAtaque(datos);
         int vida = obtenerVida(datos);
@@ -485,31 +675,31 @@ public class Main {
             int id,
             String nombre,
             String descripcion,
-            ArrayList<Efecto> efectos
+            ArrayList<Effect> efectos
     ) {
-        Efecto efectoPrincipal;
+        Effect efectoPrincipal;
 
         if (efectos.isEmpty()) {
-            efectoPrincipal = new Efecto();
+            efectoPrincipal = new Effect();
         } else {
             efectoPrincipal = efectos.get(0);
         }
 
-        String tipoEfecto = convertirTipoObjeto(efectoPrincipal.getTipo());
-        int valor = efectoPrincipal.getValor();
+        String tipoEfecto = convertirTipoObjeto(efectoPrincipal.getType());
+        int valor = efectoPrincipal.getValue();
 
         return new Objeto(id, nombre, descripcion, tipoEfecto, valor);
     }
 
-    private static Habilidad crearHabilidad(String nombreCarta, ArrayList<Efecto> efectos) {
+    private static Habilidad crearHabilidad(String nombreCarta, ArrayList<Effect> efectos) {
         if (efectos.isEmpty()) {
             return null;
         }
 
-        Efecto efecto = efectos.get(0);
-        String tipo = normalizar(efecto.getTipo());
+        Effect efecto = efectos.get(0);
+        String tipo = normalizar(efecto.getType());
 
-        String descripcion = efecto.getDescripcion();
+        String descripcion = efecto.getDescription();
 
         if (descripcion.isEmpty()) {
             descripcion = "Efecto de " + nombreCarta;
@@ -520,78 +710,82 @@ public class Main {
         switch (tipo) {
             case "damage":
             case "damage_percent_max_hp":
-                return new HabilidadDanio(nombreHabilidad, descripcion, efecto.getValor());
+                return new HabilidadDanio(nombreHabilidad, descripcion, efecto.getValue());
 
             case "heal":
             case "heal_percent_max_hp":
                 return new HabilidadCura(
                         nombreHabilidad,
                         descripcion,
-                        efecto.getValor(),
-                        esObjetivoAliado(efecto.getObjetivo())
+                        efecto.getValue(),
+                        esObjetivoAliado(efecto.getTarget())
                 );
 
             case "status":
             case "apply_status":
-                String estado = efecto.getValorTexto();
+                String estado = efecto.getTextValue();
 
                 if (estado.isEmpty()) {
                     estado = nombreHabilidad;
                 }
 
-                return new HabilidadEstado(nombreHabilidad, descripcion, estado, Math.max(1, efecto.getValor()));
+                return new HabilidadEstado(nombreHabilidad, descripcion, estado, Math.max(1, efecto.getValue()));
 
             default:
                 return null;
         }
     }
 
-    private static ArrayList<Efecto> convertirEfectos(ArrayList<EfectoJson> efectosJson) {
-        ArrayList<Efecto> efectos = new ArrayList<>();
+    private static ArrayList<Effect> convertirEfectos(ArrayList<EffectJson> efectosJson) {
+        ArrayList<Effect> efectos = new ArrayList<>();
 
         if (efectosJson == null) {
             return efectos;
         }
 
         for (int i = 0; i < efectosJson.size(); i++) {
-            EfectoJson datos = efectosJson.get(i);
+            EffectJson datos = efectosJson.get(i);
 
-            String tipo = texto(datos.getTipo());
-            String objetivo = texto(datos.getObjetivo());
-            String descripcion = texto(datos.getDescripcion());
-            int valor = datos.getValor() != null ? datos.getValor() : 0;
-
-            String valorTexto = texto(datos.getValorTexto());
-
-            if (valorTexto.isEmpty()) {
-                valorTexto = texto(datos.getEstado());
+            if (datos == null) {
+                continue;
             }
 
-            efectos.add(new Efecto(tipo, objetivo, valor, valorTexto, descripcion));
+            String tipo = texto(datos.getType());
+            String objetivo = texto(datos.getTarget());
+            String descripcion = texto(datos.getDescription());
+            int valor = datos.getValue() != null ? datos.getValue() : 0;
+
+            String valorTexto = texto(datos.getTextValue());
+
+            if (valorTexto.isEmpty()) {
+                valorTexto = texto(datos.getStatus());
+            }
+
+            efectos.add(new Effect(tipo, objetivo, valor, valorTexto, descripcion));
         }
 
         return efectos;
     }
 
     private static int obtenerAtaque(CartaJson datos) {
-        if (datos.getEstadisticas() != null && datos.getEstadisticas().getAtaque() != null) {
-            return datos.getEstadisticas().getAtaque();
+        if (datos.getStats() != null && datos.getStats().getAttack() != null) {
+            return datos.getStats().getAttack();
         }
 
-        if (datos.getAtaque() != null) {
-            return datos.getAtaque();
+        if (datos.getAttack() != null) {
+            return datos.getAttack();
         }
 
         return 1;
     }
 
     private static int obtenerVida(CartaJson datos) {
-        if (datos.getEstadisticas() != null && datos.getEstadisticas().getSalud() != null) {
-            return datos.getEstadisticas().getSalud();
+        if (datos.getStats() != null && datos.getStats().getHealth() != null) {
+            return datos.getStats().getHealth();
         }
 
-        if (datos.getSalud() != null) {
-            return datos.getSalud();
+        if (datos.getHealth() != null) {
+            return datos.getHealth();
         }
 
         return 5;
@@ -625,10 +819,22 @@ public class Main {
         Mazo mazo = new Mazo();
 
         for (int i = 0; i < cartasBase.size() && !mazo.estaLleno(); i++) {
-            mazo.anadirCarta(cartasBase.get(i));
+            mazo.anadirCarta(copiarCarta(cartasBase.get(i)));
         }
 
         return mazo;
+    }
+
+    private static Carta copiarCarta(Carta carta) {
+        if (carta instanceof Unidad) {
+            return new Unidad((Unidad) carta);
+        }
+
+        if (carta instanceof Objeto) {
+            return new Objeto((Objeto) carta);
+        }
+
+        return null;
     }
 
     // =========================================================
@@ -637,11 +843,19 @@ public class Main {
 
     private static String leerTexto(String mensaje) {
         System.out.print(mensaje);
+        if (!scanner.hasNextLine()) {
+            return "";
+        }
+
         return scanner.nextLine().trim();
     }
 
     private static int leerEntero(String mensaje) {
         System.out.print(mensaje);
+
+        if (!scanner.hasNextLine()) {
+            return 0;
+        }
 
         try {
             return Integer.parseInt(scanner.nextLine().trim());
