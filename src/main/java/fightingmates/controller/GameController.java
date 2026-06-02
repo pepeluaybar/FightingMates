@@ -18,6 +18,7 @@ public class GameController {
     private final Juego juego;
     private GameView view;
     private boolean partidaIniciada;
+=======
 
     public GameController(Juego juego) {
         this(juego, null);
@@ -27,6 +28,7 @@ public class GameController {
         this.juego = Objects.requireNonNull(juego, "juego no puede ser null");
         this.view = view;
         this.partidaIniciada = false;
+=======
     }
 
     public void setView(GameView view) {
@@ -52,6 +54,8 @@ public class GameController {
 
         juego.iniciarPartida();
         partidaIniciada = true;
+=======
+        juego.iniciarPartida();
         return notificar("Partida iniciada. Turno de " + getJugadorActual().getNombre() + ".");
     }
 
