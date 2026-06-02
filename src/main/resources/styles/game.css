@@ -1,0 +1,38 @@
+/*
+ * Primera guía visual para Fighting Mates.
+ * La UI inicial está implementada con Swing/JFrame, por lo que este archivo sirve
+ * como referencia de diseño para una futura migración a JavaFX o web.
+ */
+.root {
+    -fm-background: #111827;
+    -fm-surface: #1f2937;
+    -fm-primary: #2563eb;
+    -fm-danger: #dc2626;
+    -fm-success: #16a34a;
+    -fm-text: #f9fafb;
+}
+
+.card-unit {
+    -fx-background-color: #dcfce7;
+    -fx-border-color: #166534;
+}
+
+.card-object {
+    -fx-background-color: #ffedd5;
+    -fx-border-color: #c2410c;
+}
+
+.card-rare {
+    -fx-background-color: #dbeafe;
+    -fx-border-color: #1d4ed8;
+}
+
+.card-epic {
+    -fx-background-color: #ede9fe;
+    -fx-border-color: #7c3aed;
+}
+
+.card-legendary {
+    -fx-background-color: #fef3c7;
+    -fx-border-color: #d97706;
+}
