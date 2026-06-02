@@ -41,3 +41,13 @@ java -cp out fightingmates.Main --cards resources/cards/cards.json
 ```
 
 El formato completo está documentado en `docs/data-design.md`.
+
+## Prototipo JavaFX
+
+La primera versión visual de la interfaz se encuentra en `fightingmates.viewfx.FightingMatesFxApp` y usa estilos CSS desde `src/main/resources/styles/fightingmates.css`.
+
+```bash
+mvn javafx:run
+```
+
+El prototipo crea una partida demo con dos mazos básicos para validar rápidamente tablero, mano, registro y acciones principales sin depender todavía de recursos gráficos externos.
