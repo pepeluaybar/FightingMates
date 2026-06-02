@@ -2,6 +2,10 @@ package fightingmates;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import fightingmates.controller.GameController;
+import fightingmates.view.GameFrame;
+
+import javax.swing.SwingUtilities;
 
 import java.io.File;
 import java.io.FileReader;
@@ -18,6 +22,8 @@ public class Main {
     public static void main(String[] args) {
         String rutaCartas = obtenerRutaCartas(args);
         boolean listarCartasYSalir = existeArgumento(args, "--list-cards");
+        boolean usarConsola = existeArgumento(args, "--console");
+        boolean usarInterfazGrafica = existeArgumento(args, "--gui") || !usarConsola;
         ArrayList<Carta> cartas = cargarCartasDesdeJson(rutaCartas);
 
         if (cartas.isEmpty()) {
@@ -27,6 +33,11 @@ public class Main {
 
         if (listarCartasYSalir) {
             listarCartas(cartas);
+            return;
+        }
+
+        if (usarInterfazGrafica) {
+            iniciarInterfazGrafica(cartas);
             return;
         }
 
@@ -44,6 +55,11 @@ public class Main {
 
                 case 2:
                     iniciarNuevaPartida(cartas);
+                    break;
+
+                case 3:
+                    iniciarInterfazGrafica(cartas);
+                    salir = true;
                     break;
 
                 case 0:
@@ -66,7 +82,8 @@ public class Main {
         System.out.println();
         System.out.println("====== FIGHTINGMATES ======");
         System.out.println("1. Listar cartas cargadas");
-        System.out.println("2. Iniciar partida");
+        System.out.println("2. Iniciar partida en consola");
+        System.out.println("3. Abrir versión gráfica");
         System.out.println("0. Salir");
         System.out.println("===========================");
     }
@@ -84,6 +101,23 @@ public class Main {
     // =========================================================
     // PARTIDA
     // =========================================================
+
+
+    private static void iniciarInterfazGrafica(ArrayList<Carta> cartasBase) {
+        Mazo mazo1 = crearMazo(cartasBase);
+        Mazo mazo2 = crearMazo(cartasBase);
+
+        Jugador jugador1 = new Jugador("Jugador 1", Jugador.VIDA_INICIAL, mazo1);
+        Jugador jugador2 = new Jugador("Jugador 2", Jugador.VIDA_INICIAL, mazo2);
+        Juego juego = new Juego(jugador1, jugador2);
+        GameController controller = new GameController(juego);
+
+        SwingUtilities.invokeLater(() -> {
+            GameFrame frame = new GameFrame(controller);
+            frame.setVisible(true);
+            controller.iniciarPartida();
+        });
+    }
 
     private static void iniciarNuevaPartida(ArrayList<Carta> cartasBase) {
         System.out.println();

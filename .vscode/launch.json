@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "FightingMates - GUI",
+            "request": "launch",
+            "mainClass": "fightingmates.Main",
+            "projectName": "fightingmates",
+            "args": "--gui"
+        },
+        {
+            "type": "java",
+            "name": "FightingMates - Consola",
+            "request": "launch",
+            "mainClass": "fightingmates.Main",
+            "projectName": "fightingmates",
+            "args": "--console"
+        }
+    ]
+}

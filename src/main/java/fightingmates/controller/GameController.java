@@ -17,6 +17,8 @@ import java.util.Objects;
 public class GameController {
     private final Juego juego;
     private GameView view;
+    private boolean partidaIniciada;
+=======
 
     public GameController(Juego juego) {
         this(juego, null);
@@ -25,6 +27,8 @@ public class GameController {
     public GameController(Juego juego, GameView view) {
         this.juego = Objects.requireNonNull(juego, "juego no puede ser null");
         this.view = view;
+        this.partidaIniciada = false;
+=======
     }
 
     public void setView(GameView view) {
@@ -44,6 +48,13 @@ public class GameController {
     }
 
     public String iniciarPartida() {
+        if (partidaIniciada) {
+            return notificar("La partida ya está iniciada. Turno de " + getJugadorActual().getNombre() + ".");
+        }
+
+        juego.iniciarPartida();
+        partidaIniciada = true;
+=======
         juego.iniciarPartida();
         return notificar("Partida iniciada. Turno de " + getJugadorActual().getNombre() + ".");
     }
