@@ -91,12 +91,19 @@ public class Juego {
         return null;
     }
 
-    /** Marca fin de turno: primerTurno=false, incrementa contador, cambia turno. */
-    public void finalizarTurno() {
+    /**
+     * Marca fin de turno, cambia el jugador activo y roba una carta si la mano no está llena.
+     * Devuelve la carta robada o null si no se pudo robar.
+     */
+    public Carta finalizarTurno() {
         jugadorActual.setPrimerTurno(false);
         turnosJugados++;
         cambiarTurno();
         prepararInicioTurno(jugadorActual);
+        if (jugadorActual.getNumCartasMano() < Jugador.MANO_MAXIMA) {
+            return jugadorActual.robarCarta();
+        }
+        return null;
     }
 
     public void cambiarTurno() {
