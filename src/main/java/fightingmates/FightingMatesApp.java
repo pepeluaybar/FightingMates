@@ -45,8 +45,8 @@ public class FightingMatesApp extends Application {
         }
 
         stage.setTitle("FightingMates - Debug Battle");
-        stage.setMinWidth(1100);
-        stage.setMinHeight(720);
+        stage.setMinWidth(1250);
+        stage.setMinHeight(820);
         mostrarPantallaInicio(stage, cartas);
         stage.show();
     }
@@ -93,7 +93,7 @@ public class FightingMatesApp extends Application {
         root.setPadding(new Insets(32));
         root.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(root, 1280, 820);
+        Scene scene = new Scene(root, 1440, 900);
         cargarCss(scene);
         stage.setScene(scene);
     }
@@ -110,9 +110,9 @@ public class FightingMatesApp extends Application {
         Jugador jugador1 = new Jugador(nombreOdefecto(nombreJ1, "Jugador 1"), Jugador.VIDA_INICIAL, crearMazoPredefinido(cartas, mazoJ1));
         Jugador jugador2 = new Jugador(nombreOdefecto(nombreJ2, "Jugador 2"), Jugador.VIDA_INICIAL, crearMazoPredefinido(cartas, mazoJ2));
         GameController controller = new GameController(new Juego(jugador1, jugador2));
-        MainGameView root = new MainGameView(controller);
+        MainGameView root = new MainGameView(controller, () -> mostrarPantallaInicio(stage, cartas));
 
-        Scene scene = new Scene(root, 1280, 820);
+        Scene scene = new Scene(root, 1440, 900);
         cargarCss(scene);
         stage.setScene(scene);
         controller.iniciarPartida();

@@ -11,7 +11,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -21,6 +23,7 @@ import javafx.scene.layout.VBox;
 /** Vista principal JavaFX. Gestiona selección y renderizado; las reglas viven en el controlador/modelo. */
 public class MainGameView extends BorderPane implements GameController.GameView {
     private final GameController controller;
+    private final Runnable onSurrender;
     private final Label statusLabel;
     private final Label playerOneLabel;
     private final Label playerTwoLabel;
@@ -28,6 +31,7 @@ public class MainGameView extends BorderPane implements GameController.GameView 
     private final GridPane rivalBoard;
     private final GridPane ownBoard;
     private final HBox handBox;
+    private final ScrollPane handScroll;
     private final TextArea logArea;
     private final Button startButton;
     private final Button playUnitButton;
@@ -47,7 +51,12 @@ public class MainGameView extends BorderPane implements GameController.GameView 
     private Juego currentGame;
 
     public MainGameView(GameController controller) {
+        this(controller, null);
+    }
+
+    public MainGameView(GameController controller, Runnable onSurrender) {
         this.controller = controller;
+        this.onSurrender = onSurrender;
         this.controller.setView(this);
         this.statusLabel = new Label("Preparando terminal de combate...");
         this.playerOneLabel = new Label();
@@ -55,7 +64,8 @@ public class MainGameView extends BorderPane implements GameController.GameView 
         this.handTitleLabel = new Label("Mano del jugador actual");
         this.rivalBoard = new GridPane();
         this.ownBoard = new GridPane();
-        this.handBox = new HBox(10);
+        this.handBox = new HBox(14);
+        this.handScroll = new ScrollPane(handBox);
         this.logArea = new TextArea();
         this.startButton = new Button("Iniciar partida");
         this.playUnitButton = new Button("Jugar unidad");
@@ -78,36 +88,124 @@ public class MainGameView extends BorderPane implements GameController.GameView 
         statusLabel.getStyleClass().add("status-label");
         setTop(statusLabel);
 
-        rivalBoard.setHgap(12);
-        ownBoard.setHgap(12);
+        rivalBoard.setHgap(14);
+        rivalBoard.setVgap(10);
+        ownBoard.setHgap(14);
+        ownBoard.setVgap(10);
         rivalBoard.setAlignment(Pos.CENTER);
         ownBoard.setAlignment(Pos.CENTER);
         handTitleLabel.getStyleClass().add("hand-title");
+        handBox.setAlignment(Pos.CENTER);
+        handBox.setFillHeight(false);
+        handBox.getStyleClass().add("hand-box");
 
-        VBox center = new VBox(12, playerTwoLabel, rivalBoard, handTitleLabel, handBox, ownBoard, playerOneLabel);
+        handScroll.getStyleClass().add("hand-scroll");
+        handScroll.setFitToHeight(true);
+        handScroll.setFitToWidth(true);
+        handScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        handScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        handScroll.setPannable(true);
+
+        HBox playerInfo = new HBox(24, playerTwoLabel, playerOneLabel);
+        playerInfo.setAlignment(Pos.CENTER);
+        playerInfo.getStyleClass().add("player-info");
+
+        VBox battlefield = new VBox(6, playerInfo, rivalBoard, ownBoard);
+        battlefield.setAlignment(Pos.CENTER);
+        battlefield.getStyleClass().add("battlefield");
+
+        VBox center = new VBox(8, battlefield, handTitleLabel, handScroll);
         center.setAlignment(Pos.CENTER);
         center.getStyleClass().add("center-panel");
         setCenter(center);
 
-        Label help = new Label("Cómo jugar\n"
-                + "// Baja la vida rival a 0.\n"
-                + "// Una unidad: atacar O habilidad.\n"
-                + "// Estados: ?, !, 🔒, 🛡.\n"
-                + "// Descartar y robar: 1 vez/turno.");
-        help.getStyleClass().add("help-panel");
+        TextArea helpArea = new TextArea(textoAyuda());
+        helpArea.setEditable(false);
+        helpArea.setWrapText(true);
+        helpArea.setPrefRowCount(13);
+        helpArea.setMinHeight(210);
+        helpArea.setMaxHeight(290);
+        helpArea.getStyleClass().add("help-panel");
 
-        VBox actions = new VBox(10, help, startButton, playUnitButton, useObjectButton, attackUnitButton,
-                useAbilityButton, discardDrawButton, attackPlayerButton, endTurnButton, surrenderButton);
-        actions.getStyleClass().add("actions-panel");
-        actions.setPrefWidth(245);
-        setRight(actions);
+        TitledPane helpPane = new TitledPane("Como jugar", helpArea);
+        helpPane.getStyleClass().add("help-pane");
+        helpPane.setExpanded(true);
+        helpPane.setAnimated(true);
 
         logArea.setEditable(false);
         logArea.setWrapText(true);
-        logArea.setPrefRowCount(7);
+        logArea.setPrefRowCount(14);
+        logArea.setMinHeight(180);
+        logArea.setMaxHeight(Double.MAX_VALUE);
         logArea.getStyleClass().add("log-area");
-        setBottom(logArea);
-        BorderPane.setMargin(logArea, new Insets(12, 0, 0, 0));
+
+        VBox actionButtons = new VBox(8, startButton, playUnitButton, useObjectButton, attackUnitButton,
+                useAbilityButton, discardDrawButton, attackPlayerButton, endTurnButton, surrenderButton);
+        actionButtons.getStyleClass().add("action-buttons");
+        actionButtons.setFillWidth(true);
+        for (Button button : new Button[]{startButton, playUnitButton, useObjectButton, attackUnitButton,
+                useAbilityButton, discardDrawButton, attackPlayerButton, endTurnButton, surrenderButton}) {
+            button.setMaxWidth(Double.MAX_VALUE);
+        }
+
+        Label logTitle = new Label("Registro");
+        logTitle.getStyleClass().add("log-title");
+        VBox logPanel = new VBox(8, logTitle, logArea);
+        logPanel.getStyleClass().add("log-panel");
+        VBox.setVgrow(logArea, Priority.ALWAYS);
+        VBox.setVgrow(logPanel, Priority.ALWAYS);
+
+        VBox actions = new VBox(12, helpPane, actionButtons, logPanel);
+        actions.getStyleClass().add("actions-panel");
+        actions.setPrefWidth(300);
+        actions.setMinWidth(280);
+        actions.setMaxWidth(320);
+        actions.setFillWidth(true);
+        setRight(actions);
+    }
+
+    private String textoAyuda() {
+        return """
+                // OBJETIVO
+                Gana quien baje la vida del jugador rival a 0.
+
+                // TURNO
+                En tu turno puedes jugar cartas, atacar, usar habilidades o descartar y robar.
+                Cuando termines, pulsa Terminar turno.
+
+                // CAMPO
+                Cada jugador tiene hasta 3 huecos para unidades.
+                Solo puedes jugar una unidad si tienes un hueco libre.
+
+                // MANO, MAZO Y DESCARTE
+                Mano: cartas disponibles.
+                Mazo: cartas pendientes de robar.
+                Descarte: cartas usadas o descartadas.
+
+                // ATAQUES
+                Puedes atacar a una unidad rival si hay objetivo valido.
+                Tambien puede existir la opcion de atacar directamente al jugador rival.
+
+                // HABILIDADES
+                Una carta puede atacar o usar habilidad en el turno, nunca ambas cosas.
+                Si usa habilidad, ya no puede atacar en ese turno.
+                Si ataca, ya no puede usar habilidad en ese turno.
+
+                // ESTADOS
+                CONF: Confundido, no puede atacar durante 1 turno.
+                PRES: Presionado, hace menos dano en su proximo ataque.
+                LOCK: Bloqueado, no puede usar habilidad durante 1 turno.
+                SHIELD: Protegido, reduce el proximo dano recibido.
+
+                // DESCARTAR Y ROBAR
+                Puedes descartar una carta de la mano y robar una nueva.
+                Solo puede hacerse 1 vez por turno.
+                Si el mazo esta vacio, el registro mostrara aviso.
+
+                // ACCIONES NO PERMITIDAS
+                Si un boton esta desactivado, esa accion no se puede hacer ahora.
+                Si intentas una accion invalida, el registro explica el motivo.
+                """;
     }
 
     private void configurarAcciones() {
@@ -122,7 +220,15 @@ public class MainGameView extends BorderPane implements GameController.GameView 
             limpiarSeleccion();
             controller.finalizarTurno();
         });
-        surrenderButton.setOnAction(event -> ejecutar(controller::rendirse));
+        surrenderButton.setOnAction(event -> {
+            controller.rendirse();
+            limpiarSeleccion();
+            if (onSurrender != null) {
+                onSurrender.run();
+            } else if (currentGame != null) {
+                render(currentGame);
+            }
+        });
     }
 
     private void ejecutar(Accion accion) {
@@ -138,8 +244,45 @@ public class MainGameView extends BorderPane implements GameController.GameView 
         this.currentGame = juego;
         render(juego);
         if (mensaje != null && !mensaje.isBlank()) {
-            logArea.appendText("// " + mensaje + System.lineSeparator());
+            registrarMensaje(mensaje);
         }
+    }
+
+    private void registrarMensaje(String mensaje) {
+        String linea = etiquetaLog(mensaje) + " " + mensaje;
+        logArea.appendText(linea + System.lineSeparator());
+        logArea.positionCaret(logArea.getText().length());
+    }
+
+    private String etiquetaLog(String mensaje) {
+        String texto = mensaje.toLowerCase();
+
+        if (texto.contains("no puedes") || texto.contains("no puede") || texto.contains("no se pudo")
+                || texto.contains("selecciona") || texto.contains("primero inicia")
+                || texto.contains("límite") || texto.contains("limite") || texto.contains("ya se us")) {
+            return "[ERROR]";
+        }
+        if (texto.contains("turno") || texto.contains("partida iniciada")) {
+            return "[TURN]";
+        }
+        if (texto.contains("descart") || texto.contains("rob")) {
+            return "[DRAW]";
+        }
+        if (texto.contains("presionado") || texto.contains("confundido") || texto.contains("bloqueado")
+                || texto.contains("protegido") || texto.contains("estado")) {
+            return "[STATUS]";
+        }
+        if (texto.contains("atac")) {
+            return "[DMG]";
+        }
+        if (texto.contains("jugó") || texto.contains("jugo") || texto.contains("usó") || texto.contains("uso")) {
+            return "[PLAY]";
+        }
+        if (texto.contains("gana") || texto.contains("rindi")) {
+            return "[END]";
+        }
+
+        return "[INFO]";
     }
 
     private void render(Juego juego) {
@@ -187,7 +330,6 @@ public class MainGameView extends BorderPane implements GameController.GameView 
 
     private void renderHand(Jugador actual) {
         handBox.getChildren().clear();
-        handBox.setAlignment(Pos.CENTER_LEFT);
         for (int i = 0; i < actual.getNumCartasMano(); i++) {
             Carta carta = actual.obtenerCartaMano(i);
             CardView cardView = new CardView(carta);
@@ -269,7 +411,7 @@ public class MainGameView extends BorderPane implements GameController.GameView 
             getStyleClass().add("board-slot");
             setAlignment(Pos.CENTER);
             setSpacing(6);
-            setPrefSize(190, 275);
+            setPrefSize(180, 266);
 
             Label title = new Label((aliado ? "Propio" : "Rival") + " " + (posicion + 1));
             title.getStyleClass().add("slot-title");
@@ -281,6 +423,7 @@ public class MainGameView extends BorderPane implements GameController.GameView 
                 getChildren().add(empty);
             } else {
                 CardView card = new CardView(unidad);
+                card.usarTamanoCompacto();
                 card.setSelected(aliado && selectedOwnPosition != null && selectedOwnPosition == posicion);
                 card.setTargetSelected(selectedTargetPosition != null && selectedTargetPosition == posicion
                         && selectedTargetAlly == aliado && !(aliado && selectedOwnPosition != null && selectedOwnPosition == posicion));
