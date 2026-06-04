@@ -11,6 +11,7 @@ public class Unidad extends Carta {
     private Habilidad habilidad;
     private String estadoActual;
     private int duracionEstado;
+    private boolean estadoRecienAplicado;
     private boolean activa;
     private float multiplicadorAtaque; // bonus de objetos; 1.0 = sin bonus
 
@@ -31,6 +32,7 @@ public class Unidad extends Carta {
         this.habilidad = habilidad;
         this.estadoActual = estadoActual != null ? estadoActual : "";
         this.duracionEstado = Math.max(0, duracionEstado);
+        this.estadoRecienAplicado = false;
         this.activa = activa;
         this.multiplicadorAtaque = 1.0f;
     }
@@ -42,6 +44,7 @@ public class Unidad extends Carta {
                 otra.habilidad, otra.estadoActual,
                 otra.duracionEstado, otra.activa);
         this.vida = otra.vida;
+        this.estadoRecienAplicado = otra.estadoRecienAplicado;
         this.multiplicadorAtaque = otra.multiplicadorAtaque;
         copiarMetadatosDesde(otra);
     }
@@ -52,16 +55,22 @@ public class Unidad extends Carta {
      * Ataca a la unidad objetivo con el daño efectivo (ataque * multiplicador).
      */
     public void atacar(Unidad objetivo) {
-        if (objetivo != null && estaViva() && activa) {
+        if (objetivo != null && estaViva() && activa && puedeAtacar()) {
             objetivo.recibirDanio(getAtaqueEfectivo());
             activa = false;
         }
     }
 
     public void recibirDanio(int cantidad) {
-        if (cantidad > 0) {
-            vida = Math.max(0, vida - cantidad);
+        if (cantidad <= 0) return;
+
+        int danioFinal = cantidad;
+        if (tieneEstado("protegido")) {
+            danioFinal = Math.max(0, cantidad - 2);
+            limpiarEstado();
         }
+
+        vida = Math.max(0, vida - danioFinal);
     }
 
     public void curar(int cantidad) {
@@ -86,7 +95,7 @@ public class Unidad extends Carta {
     }
 
     public boolean usarHabilidadManual(Unidad objetivo, Jugador propietario, Jugador rival) {
-        if (!estaViva() || !activa || habilidad == null) {
+        if (!estaViva() || !activa || habilidad == null || !puedeUsarHabilidad()) {
             return false;
         }
 
@@ -95,11 +104,88 @@ public class Unidad extends Carta {
         return true;
     }
 
+    public boolean tieneEstado(String estado) {
+        return estado != null && !estado.isBlank()
+                && estadoActual != null
+                && normalizarEstado(estadoActual).equals(normalizarEstado(estado));
+    }
+
+    public void aplicarEstado(String estado, int duracion) {
+        estadoActual = normalizarEstadoAplicado(estado);
+        duracionEstado = Math.max(0, duracion);
+        estadoRecienAplicado = duracionEstado > 0 && !estadoActual.isBlank();
+    }
+
+    public void reducirDuracionEstado() {
+        if (estadoRecienAplicado) {
+            estadoRecienAplicado = false;
+            return;
+        }
+        if (duracionEstado > 0) {
+            duracionEstado--;
+        }
+        if (duracionEstado == 0 && estadoActual != null && !estadoActual.isBlank()) {
+            limpiarEstado();
+        }
+    }
+
+    public void limpiarEstado() {
+        estadoActual = "";
+        duracionEstado = 0;
+        estadoRecienAplicado = false;
+    }
+
+    public boolean puedeAtacar() {
+        return !tieneEstado("confundido");
+    }
+
+    public boolean puedeUsarHabilidad() {
+        return !tieneEstado("bloqueado");
+    }
+
+    public String getEstadoVisible() {
+        if (estadoActual == null || estadoActual.isBlank()) return "";
+
+        String nombre = switch (normalizarEstado(estadoActual)) {
+            case "confusion", "confundido" -> "? Confundido";
+            case "presionado", "presion", "depresion" -> "! Presionado";
+            case "bloqueado", "blocked" -> "🔒 Bloqueado";
+            case "protegido", "protected" -> "🛡 Protegido";
+            default -> estadoActual;
+        };
+        return nombre + (duracionEstado > 0 ? " " + duracionEstado + "T" : "");
+    }
+
+    public String getDescripcionEstado() {
+        if (estadoActual == null || estadoActual.isBlank()) return "Sin estado alterado.";
+
+        return switch (normalizarEstado(estadoActual)) {
+            case "confusion", "confundido" -> "Confundido: no puede atacar mientras dure el estado.";
+            case "presionado", "presion", "depresion" -> "Presionado: hace 1 punto menos de daño al atacar.";
+            case "bloqueado", "blocked" -> "Bloqueado: no puede usar su habilidad mientras dure el estado.";
+            case "protegido", "protected" -> "Protegido: reduce en 2 el próximo daño recibido.";
+            default -> estadoActual + ": estado temporal durante " + duracionEstado + " turno(s).";
+        };
+    }
+
+    private String normalizarEstado(String estado) {
+        return estado == null ? "" : estado.trim().toLowerCase()
+                .replace("á", "a")
+                .replace("é", "e")
+                .replace("í", "i")
+                .replace("ó", "o")
+                .replace("ú", "u");
+    }
+
     // ─── Getters y setters ────────────────────────────────────────────────────
 
     /** Daño efectivo teniendo en cuenta el multiplicador de objetos. */
     public int getAtaqueEfectivo() {
-        return (int)(ataque * multiplicadorAtaque);
+        int ataqueFinal = (int)(ataque * multiplicadorAtaque);
+        if (tieneEstado("presionado") || tieneEstado("depresion")) {
+            ataqueFinal = Math.max(0, ataqueFinal - 1);
+        }
+        return ataqueFinal;
     }
 
     public int getAtaque() { return ataque; }
@@ -118,10 +204,21 @@ public class Unidad extends Carta {
     public void setHabilidad(Habilidad habilidad) { this.habilidad = habilidad; }
 
     public String getEstadoActual() { return estadoActual; }
-    public void setEstadoActual(String estadoActual) { this.estadoActual = estadoActual != null ? estadoActual : ""; }
+    public void setEstadoActual(String estadoActual) { this.estadoActual = normalizarEstadoAplicado(estadoActual); }
 
     public int getDuracionEstado() { return duracionEstado; }
     public void setDuracionEstado(int duracionEstado) { this.duracionEstado = Math.max(0, duracionEstado); }
+
+    private String normalizarEstadoAplicado(String estado) {
+        String normalizado = normalizarEstado(estado);
+        return switch (normalizado) {
+            case "confusion" -> "confundido";
+            case "depresion", "presion" -> "presionado";
+            case "blocked" -> "bloqueado";
+            case "protected" -> "protegido";
+            default -> estado != null ? estado : "";
+        };
+    }
 
     public boolean esActiva() { return activa; }
     public void setActiva(boolean activa) { this.activa = activa; }
