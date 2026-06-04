@@ -28,8 +28,7 @@ public class HabilidadEstado extends Habilidad {
     @Override
     public void aplicar(Unidad origen, Unidad objetivo, Jugador propietario, Jugador rival) {
         if (objetivo != null && objetivo.estaViva()) {
-            objetivo.setEstadoActual(estadoAplicado);
-            objetivo.setDuracionEstado(duracion);
+            objetivo.aplicarEstado(estadoAplicado, duracion);
         }
     }
 

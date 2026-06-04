@@ -3,6 +3,7 @@ package fightingmates.controller;
 import fightingmates.Carta;
 import fightingmates.Effect;
 import fightingmates.Juego;
+import fightingmates.HabilidadCura;
 import fightingmates.Jugador;
 import fightingmates.Objeto;
 import fightingmates.Tablero;
@@ -165,7 +166,10 @@ public class GameController {
             return notificar("Selecciona una unidad atacante propia válida.");
         }
         if (!atacante.esActiva()) {
-            return notificar("La unidad atacante ya actuó en este turno.");
+            return notificar("La unidad atacante ya usó su acción en este turno.");
+        }
+        if (!atacante.puedeAtacar()) {
+            return notificar(atacante.getNombre() + " está Confundido y no puede atacar este turno.");
         }
         Unidad defensor = obtenerUnidadValidada(rival, posicionDefensor);
         if (defensor == null) {
@@ -188,7 +192,10 @@ public class GameController {
             return notificar("Selecciona una unidad atacante propia válida.");
         }
         if (!atacante.esActiva()) {
-            return notificar("La unidad atacante ya actuó en este turno.");
+            return notificar("La unidad atacante ya usó su acción en este turno.");
+        }
+        if (!atacante.puedeAtacar()) {
+            return notificar(atacante.getNombre() + " está Confundido y no puede atacar este turno.");
         }
         if (juego.getTurnosJugados() < 2) {
             return notificar("No se puede atacar directamente al jugador durante la primera ronda.");
@@ -200,6 +207,73 @@ public class GameController {
         String mensaje = atacante.getNombre() + " atacó directamente a " + rival.getNombre() + ".";
         juego.atacarJugador(atacante, rival);
         return notificarConGanador(mensaje);
+    }
+
+
+    public String usarHabilidad(int posicionOrigen, int posicionObjetivo, boolean objetivoAliado) {
+        if (!puedeActuar()) return notificar("Primero inicia una partida.");
+
+        Jugador actual = getJugadorActual();
+        Jugador rival = getJugadorRival();
+        Unidad origen = obtenerUnidadValidada(actual, posicionOrigen);
+        if (origen == null) {
+            return notificar("Selecciona una unidad propia con habilidad.");
+        }
+        if (origen.getHabilidad() == null) {
+            return notificar(origen.getNombre() + " no tiene habilidad disponible.");
+        }
+        if (!origen.esActiva()) {
+            return notificar(origen.getNombre() + " ya usó su acción este turno.");
+        }
+        if (!origen.puedeUsarHabilidad()) {
+            return notificar(origen.getNombre() + " está Bloqueado y no puede usar habilidad este turno.");
+        }
+
+        boolean debeSerAliado = habilidadRequiereAliado(origen);
+        if (debeSerAliado != objetivoAliado) {
+            return notificar("La habilidad de " + origen.getNombre() + " debe usarse sobre "
+                    + (debeSerAliado ? "una unidad aliada." : "una unidad rival."));
+        }
+
+        Jugador jugadorObjetivo = objetivoAliado ? actual : rival;
+        Unidad objetivo = obtenerUnidadValidada(jugadorObjetivo, posicionObjetivo);
+        if (objetivo == null) {
+            return notificar("Selecciona una unidad objetivo válida para la habilidad.");
+        }
+
+        String nombreHabilidad = origen.getHabilidad().getNombre();
+        if (!origen.usarHabilidadManual(objetivo, actual, rival)) {
+            return notificar("No se pudo usar la habilidad.");
+        }
+        limpiarUnidadesMuertas();
+        return notificarConGanador(origen.getNombre() + " usó " + nombreHabilidad + " sobre " + objetivo.getNombre() + ".");
+    }
+
+    public String descartarYRobar(int indiceCarta) {
+        if (!puedeActuar()) return notificar("Primero inicia una partida.");
+
+        Jugador actual = getJugadorActual();
+        Carta carta = actual.obtenerCartaMano(indiceCarta);
+        if (carta == null) {
+            return notificar("Selecciona una carta de tu mano para descartar.");
+        }
+        if (actual.haUsadoDescarteRoboEsteTurno()) {
+            return notificar("Ya usaste Descartar y robar este turno.");
+        }
+        if (actual.getMazo().estaVacio()) {
+            return notificar("No puedes descartar y robar: el mazo está vacío.");
+        }
+
+        String nombreDescartada = carta.getNombre();
+        Carta descartada = actual.eliminarCartaDeMano(indiceCarta);
+        actual.anadirAlDescarte(descartada);
+        Carta robada = actual.robarCarta();
+        actual.setDescarteRoboUsadoEsteTurno(true);
+
+        if (robada == null) {
+            return notificar(nombreDescartada + " fue al descarte, pero no se pudo añadir la carta robada a la mano.");
+        }
+        return notificar(actual.getNombre() + " descartó " + nombreDescartada + " y robó 1 carta.");
     }
 
     public String finalizarTurno() {
@@ -237,6 +311,20 @@ public class GameController {
         }
         Unidad unidad = juego.getTablero().obtenerUnidad(jugador, posicion);
         return unidad != null && unidad.estaViva() ? unidad : null;
+    }
+
+
+    private boolean habilidadRequiereAliado(Unidad unidad) {
+        if (unidad.getHabilidad() instanceof HabilidadCura || unidad.getHabilidad().esSoloAliados()) {
+            return true;
+        }
+        for (Effect efecto : unidad.getEfectos()) {
+            String objetivo = efecto.getTarget() == null ? "" : efecto.getTarget().toLowerCase(Locale.ROOT);
+            if (objetivo.contains("ally") || objetivo.contains("self")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean esObjetivoCompatible(String tipo, boolean objetivoAliado) {

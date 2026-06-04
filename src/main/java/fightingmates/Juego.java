@@ -70,16 +70,11 @@ public class Juego {
         if (atacante == null || !atacante.estaViva() || !atacante.esActiva()) return;
         if (objetivo == null || !objetivo.estaViva()) return;
         atacante.atacar(objetivo);
-        // Solo aplica habilidad automáticamente si NO es de curación exclusiva para aliados
-        Habilidad hab = atacante.getHabilidad();
-        if (hab != null && !hab.esSoloAliados()) {
-            atacante.aplicarHabilidad(objetivo, jugadorActual, getJugadorRival(jugadorActual));
-        }
     }
 
     /** Una unidad ataca directamente al jugador rival (cuando no hay unidades enemigas). */
     public void atacarJugador(Unidad atacante, Jugador defensor) {
-        if (atacante == null || !atacante.estaViva() || !atacante.esActiva() || defensor == null) return;
+        if (atacante == null || !atacante.estaViva() || !atacante.esActiva() || !atacante.puedeAtacar() || defensor == null) return;
         defensor.recibirDanio(atacante.getAtaqueEfectivo());
         atacante.setActiva(false);
     }
@@ -112,12 +107,14 @@ public class Juego {
 
     private void prepararInicioTurno(Jugador jugador) {
         jugador.setObjetoUsadoEsteTurno(false);
+        jugador.setDescarteRoboUsadoEsteTurno(false);
 
         Unidad[] campo = tablero.getCampo(jugador);
         if (campo == null) return;
 
         for (Unidad unidad : campo) {
             if (unidad != null && unidad.estaViva()) {
+                unidad.reducirDuracionEstado();
                 unidad.setActiva(true);
             }
         }

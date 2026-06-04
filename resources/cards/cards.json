@@ -6,7 +6,7 @@
     "cardClass": "unit",
     "target": "enemy",
     "timing": "action",
-    "description": "Pepelu organiza la partida y presiona al rival con autoridad.",
+    "description": "Habilidad: aplica Presionado a una unidad rival durante 2 turnos. Una unidad Presionada hace 1 punto menos de daño al atacar.",
     "copies": 1,
     "stats": {
       "attack": 3,
@@ -17,8 +17,8 @@
         "type": "apply_status",
         "target": "enemy",
         "value": 2,
-        "status": "depresion",
-        "description": "Discurso de delegado: aplica depresion durante 2 turnos."
+        "status": "presionado",
+        "description": "Aplica Presionado durante 2 turnos: el objetivo hace 1 punto menos de daño al atacar."
       }
     ]
   },
@@ -29,7 +29,7 @@
     "cardClass": "unit",
     "target": "ally",
     "timing": "action",
-    "description": "Pepelu aguanta la presión y ayuda a recuperar vida.",
+    "description": "Habilidad: cura 3 puntos de vida a una unidad aliada al usar habilidad.",
     "copies": 1,
     "stats": {
       "attack": 2,
@@ -51,7 +51,7 @@
     "cardClass": "unit",
     "target": "enemy",
     "timing": "action",
-    "description": "Dani entra serio y pega menos, pero aguanta bastante.",
+    "description": "Habilidad: inflige 1 punto de daño extra a una unidad rival al usar habilidad.",
     "copies": 1,
     "stats": {
       "attack": 2,
@@ -73,7 +73,7 @@
     "cardClass": "unit",
     "target": "enemy",
     "timing": "action",
-    "description": "Dani se viene arriba y ataca con mucha energía.",
+    "description": "Habilidad: inflige 2 puntos de daño a una unidad rival al usar habilidad.",
     "copies": 1,
     "stats": {
       "attack": 4,
@@ -95,7 +95,7 @@
     "cardClass": "unit",
     "target": "enemy",
     "timing": "action",
-    "description": "Nacho tira de rima rápida para descolocar al rival.",
+    "description": "Habilidad: aplica Confundido a una unidad rival durante 1 turno. Una unidad Confundida no puede atacar.",
     "copies": 1,
     "stats": {
       "attack": 3,
@@ -106,8 +106,8 @@
         "type": "apply_status",
         "target": "enemy",
         "value": 1,
-        "status": "confusion",
-        "description": "Cuack mental: aplica confusion durante 1 turno."
+        "status": "confundido",
+        "description": "Aplica Confundido durante 1 turno: el objetivo no puede atacar."
       }
     ]
   },
@@ -118,7 +118,7 @@
     "cardClass": "unit",
     "target": "ally",
     "timing": "action",
-    "description": "Nacho levanta al equipo con discurso presidencial.",
+    "description": "Habilidad: cura 4 puntos de vida a una unidad aliada al usar habilidad.",
     "copies": 1,
     "stats": {
       "attack": 2,
@@ -140,7 +140,7 @@
     "cardClass": "unit",
     "target": "ally",
     "timing": "action",
-    "description": "Andres se recompone y mantiene al equipo en pie.",
+    "description": "Habilidad: cura 2 puntos de vida a una unidad aliada al usar habilidad.",
     "copies": 1,
     "stats": {
       "attack": 2,
@@ -162,7 +162,7 @@
     "cardClass": "unit",
     "target": "enemy",
     "timing": "action",
-    "description": "Andres aguanta muchísimo y golpea cuando le dejan sitio.",
+    "description": "Habilidad: inflige 1 punto de daño extra a una unidad rival al usar habilidad.",
     "copies": 1,
     "stats": {
       "attack": 3,
@@ -184,7 +184,7 @@
     "cardClass": "unit",
     "target": "enemy",
     "timing": "action",
-    "description": "Manu entra con silbido y molesta al rival.",
+    "description": "Habilidad: inflige 1 punto de daño extra a una unidad rival al usar habilidad.",
     "copies": 1,
     "stats": {
       "attack": 3,
@@ -206,7 +206,7 @@
     "cardClass": "unit",
     "target": "enemy",
     "timing": "action",
-    "description": "Manu viene completo y pega fuerte.",
+    "description": "Habilidad: inflige 2 puntos de daño a una unidad rival al usar habilidad.",
     "copies": 1,
     "stats": {
       "attack": 4,
@@ -228,7 +228,7 @@
     "cardClass": "unit",
     "target": "enemy",
     "timing": "action",
-    "description": "Pablo arriesga la jugada y busca daño rápido.",
+    "description": "Habilidad: inflige 1 punto de daño extra a una unidad rival al usar habilidad.",
     "copies": 1,
     "stats": {
       "attack": 4,
@@ -250,7 +250,7 @@
     "cardClass": "unit",
     "target": "enemy",
     "timing": "action",
-    "description": "Pablo saca una cañita antigua y hace daño serio.",
+    "description": "Habilidad: inflige 2 puntos de daño a una unidad rival al usar habilidad.",
     "copies": 1,
     "stats": {
       "attack": 5,
@@ -272,7 +272,7 @@
     "cardClass": "unit",
     "target": "enemy",
     "timing": "action",
-    "description": "Melero analiza la partida y castiga el fallo rival.",
+    "description": "Habilidad: inflige 2 puntos de daño a una unidad rival al usar habilidad.",
     "copies": 1,
     "stats": {
       "attack": 3,
@@ -294,7 +294,7 @@
     "cardClass": "object",
     "target": "ally",
     "timing": "action",
-    "description": "Un café rápido para recuperar a una unidad aliada.",
+    "description": "Objeto: cura 4 puntos de vida a una unidad aliada seleccionada.",
     "copies": 1,
     "effects": [
       {
@@ -312,7 +312,7 @@
     "cardClass": "object",
     "target": "enemy",
     "timing": "action",
-    "description": "Un silbido que desconcentra y hace daño a una unidad enemiga.",
+    "description": "Objeto: inflige 3 puntos de daño a una unidad enemiga seleccionada.",
     "copies": 1,
     "effects": [
       {
@@ -330,7 +330,7 @@
     "cardClass": "object",
     "target": "ally",
     "timing": "action",
-    "description": "Mejora el ataque de una unidad aliada durante la partida.",
+    "description": "Objeto: multiplica por 1.5 el ataque de una unidad aliada seleccionada.",
     "copies": 1,
     "effects": [
       {
@@ -348,7 +348,7 @@
     "cardClass": "object",
     "target": "enemy_player",
     "timing": "action",
-    "description": "Daño directo al jugador rival.",
+    "description": "Objeto: inflige 4 puntos de daño directamente al jugador rival.",
     "copies": 1,
     "effects": [
       {
@@ -356,6 +356,75 @@
         "target": "enemy_player",
         "value": 4,
         "description": "Inflige 4 puntos de daño directamente al jugador rival."
+      }
+    ]
+  },
+  {
+    "name": "Dev Frontend",
+    "rarity": "perro",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Habilidad: aplica Confundido a una unidad rival durante 1 turno. Una unidad Confundida no puede atacar.",
+    "copies": 1,
+    "stats": {
+      "attack": 2,
+      "health": 6
+    },
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "value": 1,
+        "status": "confundido",
+        "description": "Bug visual: aplica Confundido durante 1 turno."
+      }
+    ]
+  },
+  {
+    "name": "Backend Guard",
+    "rarity": "oca",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "ally",
+    "timing": "action",
+    "description": "Habilidad: aplica Protegido a una unidad aliada durante 1 turno. Protegido reduce en 2 el próximo daño recibido.",
+    "copies": 1,
+    "stats": {
+      "attack": 2,
+      "health": 8
+    },
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "ally",
+        "value": 1,
+        "status": "protegido",
+        "description": "Firewall: aplica Protegido durante 1 turno."
+      }
+    ]
+  },
+  {
+    "name": "Tester QA",
+    "rarity": "perro",
+    "type": "Personaje",
+    "cardClass": "unit",
+    "target": "enemy",
+    "timing": "action",
+    "description": "Habilidad: aplica Bloqueado a una unidad rival durante 1 turno. Una unidad Bloqueada no puede usar habilidad.",
+    "copies": 1,
+    "stats": {
+      "attack": 1,
+      "health": 7
+    },
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "value": 1,
+        "status": "bloqueado",
+        "description": "Caso de prueba fallido: aplica Bloqueado durante 1 turno."
       }
     ]
   }

@@ -23,6 +23,7 @@ public class Jugador {
     private int numCartasDescarte;
     private boolean primerTurno;
     private boolean objetoUsadoEsteTurno;
+    private boolean descarteRoboUsadoEsteTurno;
 
     // Referencia al tablero y al rival: las asigna Juego tras construir ambos jugadores
     private Tablero tablero;
@@ -44,6 +45,7 @@ public class Jugador {
         this.numCartasDescarte = 0;
         this.primerTurno = true;
         this.objetoUsadoEsteTurno = false;
+        this.descarteRoboUsadoEsteTurno = false;
     }
 
     // Constructor de copia (copia estado; tablero y rival se reasignan externamente)
@@ -55,6 +57,7 @@ public class Jugador {
         this.numCartasDescarte = otro.numCartasDescarte;
         this.primerTurno = otro.primerTurno;
         this.objetoUsadoEsteTurno = otro.objetoUsadoEsteTurno;
+        this.descarteRoboUsadoEsteTurno = otro.descarteRoboUsadoEsteTurno;
         // tablero y rival no se copian; deben reasignarse
     }
 
@@ -171,6 +174,11 @@ public class Jugador {
     public boolean haUsadoObjetoEsteTurno() { return objetoUsadoEsteTurno; }
     public void setObjetoUsadoEsteTurno(boolean objetoUsadoEsteTurno) {
         this.objetoUsadoEsteTurno = objetoUsadoEsteTurno;
+    }
+
+    public boolean haUsadoDescarteRoboEsteTurno() { return descarteRoboUsadoEsteTurno; }
+    public void setDescarteRoboUsadoEsteTurno(boolean descarteRoboUsadoEsteTurno) {
+        this.descarteRoboUsadoEsteTurno = descarteRoboUsadoEsteTurno;
     }
 
     public Tablero getTablero() { return tablero; }
