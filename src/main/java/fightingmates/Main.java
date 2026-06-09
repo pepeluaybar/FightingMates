@@ -2,7 +2,6 @@ package fightingmates;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-
 import java.io.File;
 import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
@@ -12,12 +11,14 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static final String DEFAULT_CARDS_PATH = "resources/cards/cards.json";
+    static final String DEFAULT_CARDS_PATH = "resources/cards/cards.json";
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         String rutaCartas = obtenerRutaCartas(args);
         boolean listarCartasYSalir = existeArgumento(args, "--list-cards");
+        boolean usarConsola = existeArgumento(args, "--console");
+        boolean usarInterfazGrafica = existeArgumento(args, "--gui") || !usarConsola;
         ArrayList<Carta> cartas = cargarCartasDesdeJson(rutaCartas);
 
         if (cartas.isEmpty()) {
@@ -27,6 +28,11 @@ public class Main {
 
         if (listarCartasYSalir) {
             listarCartas(cartas);
+            return;
+        }
+
+        if (usarInterfazGrafica) {
+            iniciarInterfazGrafica(cartas);
             return;
         }
 
@@ -44,6 +50,11 @@ public class Main {
 
                 case 2:
                     iniciarNuevaPartida(cartas);
+                    break;
+
+                case 3:
+                    iniciarInterfazGrafica(cartas);
+                    salir = true;
                     break;
 
                 case 0:
@@ -66,7 +77,8 @@ public class Main {
         System.out.println();
         System.out.println("====== FIGHTINGMATES ======");
         System.out.println("1. Listar cartas cargadas");
-        System.out.println("2. Iniciar partida");
+        System.out.println("2. Iniciar partida en consola");
+        System.out.println("3. Abrir versión gráfica");
         System.out.println("0. Salir");
         System.out.println("===========================");
     }
@@ -84,6 +96,12 @@ public class Main {
     // =========================================================
     // PARTIDA
     // =========================================================
+
+
+    private static void iniciarInterfazGrafica(ArrayList<Carta> cartasBase) {
+        FightingMatesApp.setCartasIniciales(cartasBase);
+        FightingMatesApp.launchApp(new String[0]);
+    }
 
     private static void iniciarNuevaPartida(ArrayList<Carta> cartasBase) {
         System.out.println();
@@ -563,7 +581,7 @@ public class Main {
         return false;
     }
 
-    private static ArrayList<Carta> cargarCartasDesdeJson(String ruta) {
+    static ArrayList<Carta> cargarCartasDesdeJson(String ruta) {
         ArrayList<Carta> cartas = new ArrayList<>();
 
         File archivo = new File(ruta);
@@ -815,7 +833,7 @@ public class Main {
     // MAZOS
     // =========================================================
 
-    private static Mazo crearMazo(ArrayList<Carta> cartasBase) {
+    static Mazo crearMazo(ArrayList<Carta> cartasBase) {
         Mazo mazo = new Mazo();
 
         for (int i = 0; i < cartasBase.size() && !mazo.estaLleno(); i++) {
@@ -825,7 +843,7 @@ public class Main {
         return mazo;
     }
 
-    private static Carta copiarCarta(Carta carta) {
+    static Carta copiarCarta(Carta carta) {
         if (carta instanceof Unidad) {
             return new Unidad((Unidad) carta);
         }
